@@ -1,0 +1,1855 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#FFFFFF">
+  <title>FilmLab Timing</title>
+  
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="FilmLab">
+  
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      height: 100%;
+      background: #FFFFFF;
+      color: #1A1A1A;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      position: fixed;
+      width: 100%;
+      overscroll-behavior: none;
+    }
+
+    /* ============================================
+       PAGE D'ACCUEIL
+       ============================================ */
+    .welcome-screen {
+      height: 100vh;
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: max(60px, env(safe-area-inset-top)) 30px max(40px, env(safe-area-inset-bottom));
+      position: relative;
+    }
+
+    .welcome-content {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 60px;
+      width: 100%;
+    }
+
+    .welcome-logo {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      opacity: 0.6;
+    }
+
+    .welcome-logo img {
+      height: 20px;
+      width: auto;
+    }
+
+    .process-choice {
+      display: flex;
+      flex-direction: column;
+      gap: 60px;
+      align-items: center;
+    }
+
+    .process-option {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .process-btn {
+      font-size: 100px;
+      font-weight: 800;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      color: #1A1A1A;
+      line-height: 1;
+      letter-spacing: 8px;
+      padding: 0;
+    }
+
+    .process-btn:active {
+      transform: scale(0.95);
+      color: #666666;
+    }
+
+    @media (min-width: 768px) {
+      .process-btn {
+        font-size: 120px;
+      }
+    }
+
+    @media (max-height: 700px) {
+      .process-btn {
+        font-size: 80px;
+      }
+    }
+
+    /* ============================================
+       ÉCRAN DE CONFIGURATION C-41
+       ============================================ */
+    .config-screen {
+      height: 100vh;
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      padding: max(60px, env(safe-area-inset-top)) 30px max(25px, env(safe-area-inset-bottom));
+      align-items: center;
+      position: relative;
+    }
+
+    @media (min-width: 768px) {
+      .config-screen {
+        padding: max(60px, env(safe-area-inset-top)) 30px max(40px, env(safe-area-inset-bottom));
+      }
+    }
+
+    .config-back-btn {
+      font-size: 40px;
+      padding: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      line-height: 1;
+      font-weight: 300;
+      position: absolute;
+      left: 30px;
+      top: 60px;
+    }
+
+    .config-back-btn:active {
+      transform: scale(0.9);
+    }
+
+    .config-title {
+      font-size: 18px;
+      font-weight: 600;
+      text-transform: lowercase;
+      color: #666666;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .time-inputs {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      width: 100%;
+    }
+
+    @media (min-width: 768px) {
+      .time-inputs {
+        gap: 40px;
+      }
+    }
+
+    .time-inputs-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 30px;
+    }
+
+    @media (min-width: 768px) {
+      .time-inputs-container {
+        gap: 60px;
+      }
+    }
+
+    .time-input-row {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
+    }
+
+    @media (min-width: 768px) {
+      .time-input-row {
+        gap: 15px;
+      }
+    }
+
+    .time-input-row label {
+      font-size: 16px;
+      font-weight: 600;
+      text-transform: lowercase;
+      color: #666666;
+      text-align: center;
+    }
+
+    .time-fields {
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .time-fields input {
+      font-size: 90px;
+      font-weight: 800;
+      border: none;
+      background: transparent;
+      color: #1A1A1A;
+      width: auto;
+      min-width: 0;
+      padding: 0;
+      line-height: 1;
+      letter-spacing: -4px;
+      text-align: center;
+    }
+
+    @media (min-width: 768px) {
+      .time-fields input {
+        font-size: 120px;
+      }
+    }
+
+    .time-fields input::-webkit-outer-spin-button,
+    .time-fields input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    .time-fields input[type=number] {
+      -moz-appearance: textfield;
+    }
+
+    .time-fields input:focus {
+      outline: none;
+    }
+
+    .time-separator {
+      font-size: 60px;
+      font-weight: 800;
+      color: #1A1A1A;
+      line-height: 1;
+    }
+
+    @media (min-width: 768px) {
+      .time-separator {
+        font-size: 80px;
+      }
+    }
+
+    .validate-btn {
+      padding: 20px 60px;
+      font-size: 18px;
+      font-weight: 700;
+      background: #000000;
+      color: #FFFFFF;
+      border: none;
+      border-radius: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: lowercase;
+      width: auto;
+    }
+
+    .validate-btn:active {
+      transform: scale(0.98);
+    }
+
+    @media (max-height: 700px) {
+      .time-fields input {
+        font-size: 100px;
+      }
+      .time-separator {
+        font-size: 70px;
+      }
+    }
+
+    /* ============================================
+       LISTE DES ÉTAPES
+       ============================================ */
+    .steps-screen {
+      height: 100vh;
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      padding: max(10px, env(safe-area-inset-top)) 30px max(40px, env(safe-area-inset-bottom));
+      align-items: center;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .steps-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      max-width: 600px;
+      width: 100%;
+      position: relative;
+    }
+
+    .back-to-config {
+      font-size: 40px;
+      cursor: pointer;
+      padding: 5px;
+      background: none;
+      border: none;
+      line-height: 1;
+      font-weight: 300;
+      color: #1A1A1A;
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+
+    .back-to-config:active {
+      transform: scale(0.9);
+    }
+
+    .steps-progress-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      width: 100%;
+      max-width: 500px;
+      margin-top: 5px;
+    }
+
+    .progress-percentage-container {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .progress-percentage {
+      font-size: 20px;
+      font-weight: 700;
+      color: #1A1A1A;
+      line-height: 1;
+    }
+
+    .progress-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #999999;
+      text-transform: lowercase;
+    }
+
+    .total-time-container {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .total-time {
+      font-size: 20px;
+      font-weight: 700;
+      color: #1A1A1A;
+      line-height: 1;
+    }
+
+    .total-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #999999;
+      text-transform: lowercase;
+    }
+
+    .settings-icon {
+      font-size: 28px;
+      cursor: pointer;
+      padding: 10px;
+      background: none;
+      border: none;
+      transition: transform 0.2s;
+      line-height: 1;
+      margin-left: auto;
+    }
+
+    .settings-icon:active {
+      transform: scale(0.9);
+    }
+
+    .steps-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      width: 100%;
+      max-width: 600px;
+    }
+
+    .steps-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: #1A1A1A;
+      text-transform: lowercase;
+      text-align: center;
+    }
+
+    .steps-matrix {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+      max-width: 100%;
+    }
+
+    .step-dot {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #E0E0E0;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .step-dot.completed {
+      background: #008000;
+    }
+
+    .step-dot:hover::after {
+      content: attr(data-name);
+      position: absolute;
+      bottom: -35px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1A1A1A;
+      color: #FFFFFF;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      white-space: nowrap;
+      font-weight: 600;
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    .steps-details {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      width: 100%;
+      max-width: 500px;
+      max-height: 500px;
+      overflow-y: auto;
+    }
+
+    .step-detail-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 20px;
+      background: #F5F5F5;
+      border-radius: 10px;
+      font-size: 14px;
+      transition: all 0.2s ease;
+    }
+
+    .step-detail-item.completed {
+      background: #E0F7E0;
+    }
+
+    .step-detail-name {
+      font-weight: 600;
+      text-transform: uppercase;
+      color: #1A1A1A;
+    }
+
+    .step-detail-time {
+      font-weight: 700;
+      color: #666666;
+    }
+
+    .steps-bottom {
+      margin-top: auto;
+      padding-top: 15px;
+      padding-bottom: 20px;
+      width: 100%;
+      max-width: 600px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .start-btn {
+      width: auto;
+      padding: 20px 60px;
+      font-size: 18px;
+      font-weight: 700;
+      background: #000000;
+      color: #FFFFFF;
+      border: none;
+      border-radius: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: lowercase;
+      box-shadow: 0 3px 0 0 #FFFFFF;
+    }
+
+    .start-btn:active {
+      transform: scale(0.98);
+    }
+
+    /* ============================================
+       TIMER
+       ============================================ */
+    .timer-screen {
+      height: 100vh;
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      padding: max(20px, env(safe-area-inset-top)) 20px max(20px, env(safe-area-inset-bottom));
+      justify-content: space-between;
+    }
+
+    .timer-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      width: 100%;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .back-arrow {
+      font-size: 40px;
+      cursor: pointer;
+      padding: 5px;
+      background: none;
+      border: none;
+      transition: transform 0.2s;
+      line-height: 1;
+      font-weight: 300;
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+
+    .back-arrow:active {
+      transform: scale(0.9);
+    }
+
+    .timer-main {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 40px;
+      max-width: 600px;
+      margin: 0 auto;
+      width: 100%;
+      flex: 1;
+    }
+
+    .step-name {
+      font-size: 20px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      text-align: center;
+    }
+
+    .countdown {
+      font-size: 90px;
+      font-weight: 800;
+      color: #1A1A1A;
+      letter-spacing: -4px;
+      line-height: 1;
+    }
+
+    @media (min-width: 768px) {
+      .countdown {
+        font-size: 120px;
+      }
+    }
+
+    .countdown.warning {
+      color: #FF6B35;
+    }
+
+    .progress-dots {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+      max-width: 400px;
+    }
+
+    .progress-dot {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #E0E0E0;
+      transition: all 0.3s ease;
+    }
+
+    .progress-dot.completed {
+      background: #000000;
+    }
+
+    .progress-dot.active {
+      background: #000000;
+      transform: scale(1.2);
+    }
+
+    .timer-controls {
+      display: flex;
+      gap: 10px;
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto;
+      flex-shrink: 0;
+    }
+
+    .control-btn {
+      flex: 1;
+      padding: 16px 12px;
+      font-size: 14px;
+      font-weight: 600;
+      background: #F5F5F5;
+      color: #1A1A1A;
+      border: 2px solid #000000;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    @media (min-width: 768px) {
+      .control-btn {
+        padding: 20px;
+        font-size: 18px;
+        letter-spacing: 1px;
+      }
+    }
+
+    .control-btn.primary {
+      background: #008000;
+      color: #FFFFFF;
+      border-color: #008000;
+    }
+
+    .control-btn.pause {
+      background: #FF6B35;
+      color: #FFFFFF;
+      border-color: #FF6B35;
+    }
+
+    .control-btn.resume {
+      background: #1e8fd6;
+      color: #FFFFFF;
+      border-color: #1e8fd6;
+    }
+
+    .control-btn.reset {
+      background: #d61e33;
+      color: #FFFFFF;
+      border-color: #d61e33;
+    }
+
+    .control-btn:active {
+      transform: scale(0.98);
+    }
+
+    /* ============================================
+       PAGE DE RÉGLAGES
+       ============================================ */
+    .settings-screen {
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      padding: max(15px, env(safe-area-inset-top)) 20px max(20px, env(safe-area-inset-bottom));
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    @media (min-width: 768px) {
+      .settings-screen {
+        padding: max(30px, env(safe-area-inset-top)) 30px max(40px, env(safe-area-inset-bottom));
+      }
+    }
+
+    .settings-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      width: 100%;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    @media (min-width: 768px) {
+      .settings-header {
+        margin-bottom: 30px;
+      }
+    }
+
+    .settings-header h2 {
+      font-size: 18px;
+      font-weight: 600;
+      text-transform: lowercase;
+      color: #666666;
+      margin: 0 auto;
+    }
+
+    .close-icon {
+      font-size: 36px;
+      cursor: pointer;
+      padding: 5px;
+      background: none;
+      border: none;
+      line-height: 1;
+      color: #1A1A1A;
+      font-weight: 300;
+      position: absolute;
+      right: 20px;
+    }
+
+    @media (min-width: 768px) {
+      .close-icon {
+        right: 30px;
+      }
+    }
+
+    .close-icon:active {
+      transform: scale(0.9);
+    }
+
+    .settings-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-width: 600px;
+      margin: 0 auto;
+      width: 100%;
+      flex: 1;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding-right: 5px;
+      min-height: 0;
+    }
+
+    @media (min-width: 768px) {
+      .settings-list {
+        gap: 12px;
+      }
+    }
+
+    .setting-item {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      padding: 10px;
+      background: #F5F5F5;
+      border-radius: 10px;
+      border: none;
+      transition: all 0.2s ease;
+    }
+
+    @media (min-width: 768px) {
+      .setting-item {
+        flex-wrap: nowrap;
+        gap: 10px;
+        padding: 12px 16px;
+      }
+    }
+
+    .setting-item .order-number {
+      font-size: 14px;
+      font-weight: 700;
+      text-align: center;
+      min-width: 24px;
+      color: #666666;
+    }
+
+    @media (min-width: 768px) {
+      .setting-item .order-number {
+        min-width: 28px;
+      }
+    }
+
+    .setting-item input[type="text"] {
+      padding: 0;
+      font-size: 14px;
+      border: none;
+      background: transparent;
+      text-transform: uppercase;
+      font-weight: 600;
+      flex: 1;
+      min-width: 0;
+      color: #1A1A1A;
+      width: 100%;
+    }
+
+    @media (min-width: 768px) {
+      .setting-item input[type="text"] {
+        width: auto;
+      }
+    }
+
+    .setting-item input[type="text"]:focus {
+      outline: 2px solid #1A1A1A;
+      background: #FFFFFF;
+    }
+
+    .setting-item .time-group {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .setting-item .controls-wrapper {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+      flex-shrink: 0;
+      margin-left: auto;
+    }
+
+    @media (max-width: 500px) {
+      .setting-item {
+        padding: 10px;
+      }
+      
+      .setting-item .order-number {
+        order: 1;
+      }
+      
+      .setting-item input[type="text"] {
+        order: 2;
+        flex-basis: calc(100% - 40px);
+      }
+      
+      .setting-item .time-group {
+        order: 3;
+        margin-top: 4px;
+      }
+      
+      .setting-item .controls-wrapper {
+        order: 4;
+        margin-left: auto;
+        margin-top: 4px;
+      }
+    }
+
+    .setting-item input[type="number"] {
+      padding: 0;
+      font-size: 14px;
+      text-align: center;
+      border: none;
+      background: transparent;
+      font-weight: 700;
+      width: 42px;
+      color: #1A1A1A;
+    }
+
+    @media (min-width: 768px) {
+      .setting-item input[type="number"] {
+        width: 48px;
+      }
+    }
+
+    .setting-item input[type="number"]:focus {
+      outline: none;
+    }
+
+    .setting-item .time-label {
+      font-size: 10px;
+      text-transform: lowercase;
+      color: #999999;
+      font-weight: 600;
+    }
+
+    .icon-btn {
+      font-size: 20px;
+      cursor: pointer;
+      padding: 4px;
+      background: none;
+      border: none;
+      text-align: center;
+      color: #999999;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+      min-width: 28px;
+    }
+
+    @media (min-width: 768px) {
+      .icon-btn {
+        font-size: 22px;
+        padding: 5px;
+      }
+    }
+
+    .icon-btn:hover {
+      color: #1A1A1A;
+    }
+
+    .icon-btn:active {
+      transform: scale(0.9);
+    }
+
+    .add-step-btn {
+      padding: 14px;
+      font-size: 15px;
+      font-weight: 700;
+      background: #F5F5F5;
+      color: #1A1A1A;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-transform: lowercase;
+      margin-top: 12px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      width: 100%;
+      flex-shrink: 0;
+    }
+
+    @media (min-width: 768px) {
+      .add-step-btn {
+        padding: 18px;
+        font-size: 16px;
+        margin-top: 20px;
+      }
+    }
+
+    .add-step-btn:active {
+      transform: scale(0.98);
+      background: #E0E0E0;
+    }
+
+    .settings-actions {
+      display: flex;
+      gap: 10px;
+      max-width: 600px;
+      margin: 12px auto 0;
+      width: 100%;
+      flex-shrink: 0;
+    }
+
+    @media (min-width: 768px) {
+      .settings-actions {
+        margin: 20px auto 0;
+      }
+    }
+
+    .save-btn {
+      flex: 1;
+      padding: 16px;
+      font-size: 16px;
+      font-weight: 700;
+      background: #000000;
+      color: #FFFFFF;
+      border: none;
+      border-radius: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: lowercase;
+      box-shadow: 0 3px 0 0 #E0E0E0;
+    }
+
+    @media (min-width: 768px) {
+      .save-btn {
+        padding: 20px;
+        font-size: 18px;
+      }
+    }
+
+    .save-btn:active {
+      transform: scale(0.98);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-height: 700px) {
+      .countdown {
+        font-size: 80px;
+      }
+      .time-fields input {
+        font-size: 80px;
+      }
+      .time-separator {
+        font-size: 50px;
+      }
+      .settings-header {
+        margin-bottom: 15px;
+      }
+      .settings-list {
+        gap: 6px;
+      }
+      .setting-item {
+        padding: 8px;
+      }
+      .add-step-btn {
+        padding: 12px;
+        margin-top: 10px;
+      }
+      .save-btn {
+        padding: 14px;
+      }
+      .settings-actions {
+        margin-top: 10px;
+      }
+      .time-inputs {
+        gap: 15px;
+      }
+      .time-inputs-container {
+        gap: 25px;
+      }
+      .time-input-row {
+        gap: 8px;
+      }
+      .config-screen {
+        padding: max(50px, env(safe-area-inset-top)) 30px max(20px, env(safe-area-inset-bottom));
+      }
+    }
+
+    @media (max-height: 600px) {
+      .timer-main {
+        gap: 30px;
+      }
+      .countdown {
+        font-size: 70px;
+      }
+      .control-btn {
+        padding: 14px 10px;
+        font-size: 12px;
+      }
+      .settings-screen {
+        padding: max(10px, env(safe-area-inset-top)) 15px max(15px, env(safe-area-inset-bottom));
+      }
+      .settings-header {
+        margin-bottom: 10px;
+      }
+      .settings-header h2 {
+        font-size: 16px;
+      }
+      .settings-list {
+        gap: 6px;
+      }
+      .setting-item {
+        padding: 8px;
+        font-size: 13px;
+      }
+      .setting-item input[type="text"],
+      .setting-item input[type="number"] {
+        font-size: 13px;
+      }
+      .add-step-btn {
+        padding: 10px;
+        font-size: 14px;
+        margin-top: 8px;
+      }
+      .save-btn {
+        padding: 12px;
+        font-size: 15px;
+      }
+      .settings-actions {
+        margin-top: 8px;
+      }
+      .time-inputs {
+        gap: 12px;
+      }
+      .time-inputs-container {
+        gap: 20px;
+      }
+      .time-input-row {
+        gap: 6px;
+      }
+      .time-fields input {
+        font-size: 70px;
+      }
+      .time-separator {
+        font-size: 45px;
+      }
+      .config-screen {
+        padding: max(40px, env(safe-area-inset-top)) 30px max(15px, env(safe-area-inset-bottom));
+      }
+    }
+  </style>
+</head>
+<body>
+  
+  <!-- PAGE D'ACCUEIL -->
+  <div id="welcomeScreen" class="welcome-screen">
+    <div class="welcome-content">
+      <div class="process-choice">
+        <div class="process-option">
+          <button class="process-btn" onclick="selectProcess('c41')">C-41</button>
+        </div>
+        <div class="process-option">
+          <button class="process-btn" onclick="selectProcess('nb')">N&B</button>
+        </div>
+      </div>
+    </div>
+    <div class="welcome-logo">
+      <img src="logo.png" alt="FilmLab Logo">
+    </div>
+  </div>
+
+  <!-- ÉCRAN DE CONFIGURATION C-41 -->
+  <div id="configC41Screen" class="config-screen hidden">
+    <button class="config-back-btn" onclick="backToWelcome()">&lt;</button>
+    <div class="time-inputs">
+      <div class="config-title">configuration</div>
+      <div class="time-inputs-container">
+        <div class="time-input-row">
+          <label>révélateur</label>
+          <div class="time-fields">
+            <input type="number" id="revMin" min="0" max="99" value="3">
+            <span class="time-separator">:</span>
+            <input type="number" id="revSec" min="0" max="59" value="30">
+          </div>
+        </div>
+        <div class="time-input-row">
+          <label>bleach</label>
+          <div class="time-fields">
+            <input type="number" id="bleachMin" min="0" max="99" value="6">
+            <span class="time-separator">:</span>
+            <input type="number" id="bleachSec" min="0" max="59" value="30">
+          </div>
+        </div>
+      </div>
+    </div>
+    <button class="validate-btn" onclick="validateC41()">valider</button>
+  </div>
+
+  <!-- ÉCRAN DE CONFIGURATION N&B -->
+  <div id="configNBScreen" class="config-screen hidden">
+    <button class="config-back-btn" onclick="backToWelcome()">&lt;</button>
+    <div class="time-inputs">
+      <div class="config-title">configuration</div>
+      <div class="time-inputs-container">
+        <div class="time-input-row">
+          <label>révélateur</label>
+          <div class="time-fields">
+            <input type="number" id="nbRevMin" min="0" max="99" value="7">
+            <span class="time-separator">:</span>
+            <input type="number" id="nbRevSec" min="0" max="59" value="0">
+          </div>
+        </div>
+        <div class="time-input-row">
+          <label>fixateur</label>
+          <div class="time-fields">
+            <input type="number" id="nbFixMin" min="0" max="99" value="5">
+            <span class="time-separator">:</span>
+            <input type="number" id="nbFixSec" min="0" max="59" value="0">
+          </div>
+        </div>
+      </div>
+    </div>
+    <button class="validate-btn" onclick="validateNB()">valider</button>
+  </div>
+
+  <!-- ÉCRAN DE LA LISTE DES ÉTAPES -->
+  <div id="stepsScreen" class="steps-screen hidden">
+    <div class="steps-header">
+      <button class="back-to-config" onclick="backToConfig()">&lt;</button>
+      <button class="settings-icon" onclick="openSettings()">⚙</button>
+    </div>
+    <div class="steps-content">
+      <div class="steps-title">étapes</div>
+      <div class="steps-matrix" id="stepsMatrix"></div>
+      <div class="steps-details" id="stepsDetails"></div>
+      <div class="steps-progress-container">
+        <div class="progress-percentage-container">
+          <div class="progress-percentage" id="progressPercentage">0%</div>
+        </div>
+        <div class="total-time-container">
+          <div class="total-time" id="totalTime">15:30</div>
+          <div class="total-label">total</div>
+        </div>
+      </div>
+    </div>
+    <div class="steps-bottom">
+      <button class="start-btn" onclick="startProcess()">démarrer</button>
+    </div>
+  </div>
+
+  <!-- ÉCRAN TIMER -->
+  <div id="timerScreen" class="timer-screen hidden">
+    <div class="timer-header">
+      <button class="back-arrow" onclick="backToSteps()">&lt;</button>
+      <div></div>
+    </div>
+    <div class="timer-main">
+      <div class="step-name" id="currentStepName">PRÉ-LAVAGE #1</div>
+      <div class="countdown" id="countdown">1:00</div>
+      <div class="progress-dots" id="progressDots"></div>
+    </div>
+    <div class="timer-controls">
+      <button class="control-btn primary" id="playPauseBtn" onclick="toggleTimer()">DÉMARRER</button>
+      <button class="control-btn" id="skipBtn" onclick="skipStep()">SUIVANT</button>
+      <button class="control-btn reset" id="resetBtn" onclick="resetTimer()">RESET</button>
+    </div>
+  </div>
+
+  <!-- Audio pour la notification de fin d'étape -->
+  <audio id="stepCompleteSound" preload="auto">
+    <source src="notification.mp3" type="audio/mpeg">
+    <source src="notification.ogg" type="audio/ogg">
+  </audio>
+
+  <!-- ÉCRAN DE RÉGLAGES -->
+  <div id="settingsScreen" class="settings-screen hidden">
+    <div class="settings-header">
+      <h2>réglages</h2>
+      <button class="close-icon" onclick="closeSettings()">×</button>
+    </div>
+    <div class="settings-list" id="settingsList"></div>
+    <div class="settings-actions">
+      <button class="add-step-btn" onclick="addNewStep()">+ ajouter une étape</button>
+    </div>
+    <div class="settings-actions">
+      <button class="save-btn" onclick="saveSettings()">sauvegarder</button>
+    </div>
+  </div>
+
+  <script>
+    // Variables globales
+    let currentSteps = [];
+    let currentStepIndex = 0;
+    let timerInterval = null;
+    let remainingSeconds = 0;
+    let isRunning = false;
+    let completedSteps = [];
+    let currentProcess = ''; // 'c41' ou 'nb'
+
+    // Retour à l'accueil
+    function backToWelcome() {
+      document.getElementById('configC41Screen').classList.add('hidden');
+      document.getElementById('configNBScreen').classList.add('hidden');
+      document.getElementById('welcomeScreen').classList.remove('hidden');
+    }
+
+    // Retour à la configuration depuis les étapes
+    function backToConfig() {
+      document.getElementById('stepsScreen').classList.add('hidden');
+      if (currentProcess === 'c41') {
+        document.getElementById('configC41Screen').classList.remove('hidden');
+      } else if (currentProcess === 'nb') {
+        document.getElementById('configNBScreen').classList.remove('hidden');
+      }
+    }
+
+    // Sélection du procédé
+    function selectProcess(type) {
+      if (type === 'c41') {
+        document.getElementById('welcomeScreen').classList.add('hidden');
+        document.getElementById('configC41Screen').classList.remove('hidden');
+      } else if (type === 'nb') {
+        document.getElementById('welcomeScreen').classList.add('hidden');
+        document.getElementById('configNBScreen').classList.remove('hidden');
+      }
+    }
+
+    // Validation C-41
+    function validateC41() {
+      currentProcess = 'c41';
+      // Charger les étapes sauvegardées ou utiliser les valeurs par défaut
+      const saved = localStorage.getItem('c41_steps');
+      
+      if (saved) {
+        try {
+          currentSteps = JSON.parse(saved);
+          // Mettre à jour les durées du révélateur et bleach
+          const revMin = parseInt(document.getElementById('revMin').value) || 0;
+          const revSec = parseInt(document.getElementById('revSec').value) || 0;
+          const bleachMin = parseInt(document.getElementById('bleachMin').value) || 0;
+          const bleachSec = parseInt(document.getElementById('bleachSec').value) || 0;
+          
+          const revDuration = revMin * 60 + revSec;
+          const bleachDuration = bleachMin * 60 + bleachSec;
+          
+          // Chercher et mettre à jour révélateur et bleach
+          const revIndex = currentSteps.findIndex(s => s.name.includes('RÉVÉLATEUR') && !s.name.includes('LAVAGE'));
+          const bleachIndex = currentSteps.findIndex(s => s.name === 'BLEACH');
+          
+          if (revIndex >= 0) currentSteps[revIndex].duration = revDuration;
+          if (bleachIndex >= 0) currentSteps[bleachIndex].duration = bleachDuration;
+        } catch (e) {
+          // En cas d'erreur, utiliser les valeurs par défaut
+          createDefaultC41Steps();
+        }
+      } else {
+        createDefaultC41Steps();
+      }
+      
+      displaySteps();
+    }
+
+    // Validation N&B
+    function validateNB() {
+      currentProcess = 'nb';
+      // Charger les étapes sauvegardées ou utiliser les valeurs par défaut
+      const saved = localStorage.getItem('nb_steps');
+      
+      if (saved) {
+        try {
+          currentSteps = JSON.parse(saved);
+          // Mettre à jour les durées du révélateur et fixateur
+          const revMin = parseInt(document.getElementById('nbRevMin').value) || 0;
+          const revSec = parseInt(document.getElementById('nbRevSec').value) || 0;
+          const fixMin = parseInt(document.getElementById('nbFixMin').value) || 0;
+          const fixSec = parseInt(document.getElementById('nbFixSec').value) || 0;
+          
+          const revDuration = revMin * 60 + revSec;
+          const fixDuration = fixMin * 60 + fixSec;
+          
+          // Chercher et mettre à jour révélateur et fixateur
+          const revIndex = currentSteps.findIndex(s => s.name.includes('RÉVÉLATEUR') && !s.name.includes('LAVAGE'));
+          const fixIndex = currentSteps.findIndex(s => s.name === 'FIXATEUR');
+          
+          if (revIndex >= 0) currentSteps[revIndex].duration = revDuration;
+          if (fixIndex >= 0) currentSteps[fixIndex].duration = fixDuration;
+        } catch (e) {
+          // En cas d'erreur, utiliser les valeurs par défaut
+          createDefaultNBSteps();
+        }
+      } else {
+        createDefaultNBSteps();
+      }
+      
+      displaySteps();
+    }
+    
+    function createDefaultNBSteps() {
+      const revMin = parseInt(document.getElementById('nbRevMin').value) || 0;
+      const revSec = parseInt(document.getElementById('nbRevSec').value) || 0;
+      const fixMin = parseInt(document.getElementById('nbFixMin').value) || 0;
+      const fixSec = parseInt(document.getElementById('nbFixSec').value) || 0;
+      
+      const revDuration = revMin * 60 + revSec;
+      const fixDuration = fixMin * 60 + fixSec;
+      
+      currentSteps = [
+        { name: 'PRÉ-LAVAGE', duration: 60 },
+        { name: 'RÉVÉLATEUR', duration: revDuration },
+        { name: 'LAVAGE RÉVÉLATEUR', duration: 60 },
+        { name: 'FIXATEUR', duration: fixDuration },
+        { name: 'LAVAGE FIXATEUR', duration: 60 }
+      ];
+    }
+    
+    function createDefaultC41Steps() {
+      const revMin = parseInt(document.getElementById('revMin').value) || 0;
+      const revSec = parseInt(document.getElementById('revSec').value) || 0;
+      const bleachMin = parseInt(document.getElementById('bleachMin').value) || 0;
+      const bleachSec = parseInt(document.getElementById('bleachSec').value) || 0;
+      
+      const revDuration = revMin * 60 + revSec;
+      const bleachDuration = bleachMin * 60 + bleachSec;
+      
+      currentSteps = [
+        { name: 'PRÉ-LAVAGE #1', duration: 60 },
+        { name: 'PRÉ-LAVAGE #2', duration: 60 },
+        { name: 'RÉVÉLATEUR', duration: revDuration },
+        { name: 'LAVAGE RÉVÉLATEUR', duration: 60 },
+        { name: 'BLEACH', duration: bleachDuration },
+        { name: 'LAVAGE BLEACH #1', duration: 60 },
+        { name: 'LAVAGE BLEACH #2', duration: 60 },
+        { name: 'STABILISATEUR', duration: 60 },
+        { name: 'LAVAGE STABILISATEUR', duration: 60 }
+      ];
+    }
+
+    // Affichage de la liste des étapes
+    function displaySteps() {
+      document.getElementById('configC41Screen').classList.add('hidden');
+      document.getElementById('configNBScreen').classList.add('hidden');
+      document.getElementById('stepsScreen').classList.remove('hidden');
+      
+      // Calculer le temps total
+      const totalSeconds = currentSteps.reduce((sum, step) => sum + step.duration, 0);
+      const totalMins = Math.floor(totalSeconds / 60);
+      const totalSecs = totalSeconds % 60;
+      document.getElementById('totalTime').textContent = `${totalMins}:${totalSecs.toString().padStart(2, '0')}`;
+      
+      // Calculer le pourcentage d'avancement
+      const progressPercentage = currentSteps.length > 0 
+        ? Math.round((completedSteps.length / currentSteps.length) * 100)
+        : 0;
+      document.getElementById('progressPercentage').textContent = `${progressPercentage}%`;
+      
+      // Créer la matrice de dots
+      const stepsMatrix = document.getElementById('stepsMatrix');
+      stepsMatrix.innerHTML = '';
+      
+      currentSteps.forEach((step, index) => {
+        const dot = document.createElement('div');
+        dot.className = 'step-dot';
+        dot.setAttribute('data-name', step.name);
+        
+        if (completedSteps.includes(index)) {
+          dot.classList.add('completed');
+        }
+        
+        stepsMatrix.appendChild(dot);
+      });
+      
+      // Afficher les détails des étapes
+      const stepsDetails = document.getElementById('stepsDetails');
+      stepsDetails.innerHTML = '';
+      
+      currentSteps.forEach((step, index) => {
+        const detailItem = document.createElement('div');
+        detailItem.className = 'step-detail-item';
+        
+        if (completedSteps.includes(index)) {
+          detailItem.classList.add('completed');
+        }
+        
+        const minutes = Math.floor(step.duration / 60);
+        const seconds = step.duration % 60;
+        
+        detailItem.innerHTML = `
+          <div class="step-detail-name">${step.name}</div>
+          <div class="step-detail-time">${minutes}:${seconds.toString().padStart(2, '0')}</div>
+        `;
+        
+        stepsDetails.appendChild(detailItem);
+      });
+    }
+
+    // Démarrer le processus
+    function startProcess() {
+      currentStepIndex = 0;
+      completedSteps = [];
+      document.getElementById('stepsScreen').classList.add('hidden');
+      document.getElementById('timerScreen').classList.remove('hidden');
+      initTimer();
+    }
+
+    // Initialiser le timer
+    function initTimer() {
+      const step = currentSteps[currentStepIndex];
+      remainingSeconds = step.duration;
+      
+      document.getElementById('currentStepName').textContent = step.name;
+      updateCountdownDisplay();
+      updateProgressDots();
+      
+      isRunning = false;
+      const btn = document.getElementById('playPauseBtn');
+      btn.textContent = 'DÉMARRER';
+      btn.classList.remove('pause', 'resume');
+      btn.classList.add('primary');
+    }
+
+    // Toggle timer
+    function toggleTimer() {
+      if (isRunning) {
+        pauseTimer();
+      } else {
+        startTimer();
+      }
+    }
+
+    // Démarrer timer
+    function startTimer() {
+      isRunning = true;
+      const btn = document.getElementById('playPauseBtn');
+      btn.textContent = 'PAUSE';
+      btn.classList.remove('resume', 'primary');
+      btn.classList.add('pause');
+      
+      timerInterval = setInterval(() => {
+        remainingSeconds--;
+        updateCountdownDisplay();
+        updateProgressDots();
+        
+        if (remainingSeconds <= 0) {
+          clearInterval(timerInterval);
+          playStepCompleteSound();
+          nextStep();
+        }
+      }, 1000);
+    }
+
+    // Jouer le son de fin d'étape
+    function playStepCompleteSound() {
+      const sound = document.getElementById('stepCompleteSound');
+      if (sound) {
+        sound.currentTime = 0;
+        sound.play().catch(err => {
+          console.log('Lecture audio bloquée:', err);
+        });
+      }
+    }
+
+    // Pause timer
+    function pauseTimer() {
+      isRunning = false;
+      clearInterval(timerInterval);
+      const btn = document.getElementById('playPauseBtn');
+      btn.textContent = 'REPRENDRE';
+      btn.classList.remove('primary');
+      btn.classList.add('resume');
+    }
+
+    // Étape suivante
+    function nextStep() {
+      completedSteps.push(currentStepIndex);
+      
+      if (currentStepIndex < currentSteps.length - 1) {
+        currentStepIndex++;
+        initTimer();
+        // Ne pas démarrer automatiquement - l'utilisateur doit cliquer sur DÉMARRER
+      } else {
+        // Toutes les étapes sont terminées
+        showCompletionScreen();
+      }
+    }
+
+    // Passer l'étape
+    function skipStep() {
+      clearInterval(timerInterval);
+      completedSteps.push(currentStepIndex);
+      
+      if (currentStepIndex < currentSteps.length - 1) {
+        currentStepIndex++;
+        initTimer();
+      } else {
+        // Toutes les étapes sont terminées
+        showCompletionScreen();
+      }
+    }
+
+    // Afficher l'écran de fin
+    function showCompletionScreen() {
+      clearInterval(timerInterval);
+      isRunning = false;
+      
+      // Cacher le timer et afficher les étapes
+      document.getElementById('timerScreen').classList.add('hidden');
+      document.getElementById('stepsScreen').classList.remove('hidden');
+      displaySteps();
+      
+      // Remplacer le bouton "démarrer" par "nouveau développement"
+      const startBtn = document.querySelector('.start-btn');
+      startBtn.textContent = 'nouveau développement';
+      startBtn.style.padding = '20px 40px';
+      startBtn.style.width = 'auto';
+      startBtn.onclick = () => {
+        // Réinitialiser tout
+        currentStepIndex = 0;
+        completedSteps = [];
+        
+        // Restaurer le bouton "démarrer"
+        startBtn.textContent = 'démarrer';
+        startBtn.style.padding = '20px 60px';
+        startBtn.style.width = 'auto';
+        startBtn.onclick = startProcess;
+        
+        // Retour à l'accueil
+        document.getElementById('stepsScreen').classList.add('hidden');
+        document.getElementById('welcomeScreen').classList.remove('hidden');
+      };
+    }
+
+    // Reset timer
+    function resetTimer() {
+      if (confirm('Êtes-vous sûr de vouloir recommencer depuis le début ?')) {
+        clearInterval(timerInterval);
+        isRunning = false;
+        currentStepIndex = 0;
+        completedSteps = [];
+        
+        // Réinitialiser le bouton
+        const btn = document.getElementById('playPauseBtn');
+        btn.textContent = 'DÉMARRER';
+        btn.classList.remove('pause', 'resume');
+        btn.classList.add('primary');
+        
+        // Réinitialiser le timer
+        initTimer();
+      }
+    }
+
+    // Retour aux étapes
+    function backToSteps() {
+      clearInterval(timerInterval);
+      isRunning = false;
+      document.getElementById('timerScreen').classList.add('hidden');
+      document.getElementById('stepsScreen').classList.remove('hidden');
+      displaySteps();
+    }
+
+    // Mise à jour affichage
+    function updateCountdownDisplay() {
+      const minutes = Math.floor(remainingSeconds / 60);
+      const seconds = remainingSeconds % 60;
+      const display = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+      
+      const countdownEl = document.getElementById('countdown');
+      countdownEl.textContent = display;
+      
+      if (remainingSeconds <= 10 && remainingSeconds > 0) {
+        countdownEl.classList.add('warning');
+      } else {
+        countdownEl.classList.remove('warning');
+      }
+    }
+
+    // Mise à jour dots de progression
+    function updateProgressDots() {
+      const dotsContainer = document.getElementById('progressDots');
+      dotsContainer.innerHTML = '';
+      
+      currentSteps.forEach((step, index) => {
+        const dot = document.createElement('div');
+        dot.className = 'progress-dot';
+        
+        if (completedSteps.includes(index)) {
+          dot.classList.add('completed');
+        } else if (index === currentStepIndex) {
+          dot.classList.add('active');
+        }
+        
+        dotsContainer.appendChild(dot);
+      });
+    }
+
+    // Ouvrir réglages
+    function openSettings() {
+      document.getElementById('stepsScreen').classList.add('hidden');
+      document.getElementById('settingsScreen').classList.remove('hidden');
+      displaySettings();
+    }
+
+    // Fermer réglages
+    function closeSettings() {
+      document.getElementById('settingsScreen').classList.add('hidden');
+      document.getElementById('stepsScreen').classList.remove('hidden');
+      displaySteps();
+    }
+
+    // Afficher réglages
+    function displaySettings() {
+      const settingsList = document.getElementById('settingsList');
+      settingsList.innerHTML = '';
+      
+      currentSteps.forEach((step, index) => {
+        const settingItem = document.createElement('div');
+        settingItem.className = 'setting-item';
+        
+        const orderNum = document.createElement('div');
+        orderNum.className = 'order-number';
+        orderNum.textContent = (index + 1);
+        
+        const nameInput = document.createElement('input');
+        nameInput.type = 'text';
+        nameInput.value = step.name;
+        nameInput.oninput = (e) => {
+          currentSteps[index].name = e.target.value.toUpperCase();
+        };
+        
+        const timeGroup = document.createElement('div');
+        timeGroup.className = 'time-group';
+        
+        const minInput = document.createElement('input');
+        minInput.type = 'number';
+        minInput.min = '0';
+        minInput.value = Math.floor(step.duration / 60);
+        minInput.oninput = (e) => {
+          const mins = parseInt(e.target.value) || 0;
+          const secs = currentSteps[index].duration % 60;
+          currentSteps[index].duration = mins * 60 + secs;
+        };
+        
+        const minLabel = document.createElement('span');
+        minLabel.className = 'time-label';
+        minLabel.textContent = 'min';
+        
+        const secInput = document.createElement('input');
+        secInput.type = 'number';
+        secInput.min = '0';
+        secInput.max = '59';
+        secInput.value = step.duration % 60;
+        secInput.oninput = (e) => {
+          const mins = Math.floor(currentSteps[index].duration / 60);
+          const secs = parseInt(e.target.value) || 0;
+          currentSteps[index].duration = mins * 60 + secs;
+        };
+        
+        const secLabel = document.createElement('span');
+        secLabel.className = 'time-label';
+        secLabel.textContent = 'sec';
+        
+        timeGroup.appendChild(minInput);
+        timeGroup.appendChild(minLabel);
+        timeGroup.appendChild(secInput);
+        timeGroup.appendChild(secLabel);
+        
+        const upBtn = document.createElement('button');
+        upBtn.className = 'icon-btn';
+        upBtn.textContent = '↑';
+        upBtn.onclick = () => moveStep(index, -1);
+        if (index === 0) upBtn.style.visibility = 'hidden';
+        
+        const downBtn = document.createElement('button');
+        downBtn.className = 'icon-btn';
+        downBtn.textContent = '↓';
+        downBtn.onclick = () => moveStep(index, 1);
+        if (index === currentSteps.length - 1) downBtn.style.visibility = 'hidden';
+        
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'icon-btn';
+        deleteBtn.textContent = '×';
+        deleteBtn.style.color = '#FF6B35';
+        deleteBtn.style.fontSize = '26px';
+        deleteBtn.onclick = () => deleteStep(index);
+        
+        const controlsWrapper = document.createElement('div');
+        controlsWrapper.className = 'controls-wrapper';
+        controlsWrapper.appendChild(upBtn);
+        controlsWrapper.appendChild(downBtn);
+        controlsWrapper.appendChild(deleteBtn);
+        
+        settingItem.appendChild(orderNum);
+        settingItem.appendChild(nameInput);
+        settingItem.appendChild(timeGroup);
+        settingItem.appendChild(controlsWrapper);
+        
+        settingsList.appendChild(settingItem);
+      });
+    }
+
+    // Déplacer une étape
+    function moveStep(index, direction) {
+      const newIndex = index + direction;
+      if (newIndex < 0 || newIndex >= currentSteps.length) return;
+      
+      const temp = currentSteps[index];
+      currentSteps[index] = currentSteps[newIndex];
+      currentSteps[newIndex] = temp;
+      
+      displaySettings();
+    }
+
+    // Supprimer une étape
+    function deleteStep(index) {
+      currentSteps.splice(index, 1);
+      displaySettings();
+    }
+
+    // Ajouter une nouvelle étape
+    function addNewStep() {
+      currentSteps.push({
+        name: 'NOUVELLE ÉTAPE',
+        duration: 60
+      });
+      displaySettings();
+    }
+
+    // Sauvegarder les réglages
+    function saveSettings() {
+      const storageKey = currentProcess === 'c41' ? 'c41_steps' : 'nb_steps';
+      localStorage.setItem(storageKey, JSON.stringify(currentSteps));
+      closeSettings();
+    }
+
+    // Charger au démarrage
+    window.addEventListener('DOMContentLoaded', () => {
+      const saved = localStorage.getItem('c41_steps');
+      if (saved) {
+        try {
+          currentSteps = JSON.parse(saved);
+        } catch (e) {
+          console.error('Erreur de chargement:', e);
+        }
+      }
+    });
+
+    // Gestion de la sélection des inputs
+    document.addEventListener('focus', (e) => {
+      if (e.target.type === 'number') {
+        e.target.select();
+      }
+    }, true);
+
+    // Service Worker
+    if ('serviceWorker' in navigator) {
+      const swCode = `
+        const CACHE_NAME = 'filmlab-v3';
+        self.addEventListener('install', (e) => {
+          self.skipWaiting();
+        });
+        self.addEventListener('activate', (e) => {
+          e.waitUntil(self.clients.claim());
+        });
+        self.addEventListener('fetch', (e) => {
+          e.respondWith(
+            caches.match(e.request).then((r) => r || fetch(e.request))
+          );
+        });
+      `;
+      
+      const blob = new Blob([swCode], { type: 'application/javascript' });
+      const swUrl = URL.createObjectURL(blob);
+      navigator.serviceWorker.register(swUrl).catch(() => {});
+    }
+
+    // Manifest
+    const manifest = {
+      name: "FilmLab Timing",
+      short_name: "FilmLab",
+      start_url: ".",
+      display: "standalone",
+      background_color: "#FFFFFF",
+      theme_color: "#FFFFFF",
+      icons: [{
+        src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' fill='%23008000' rx='42'/%3E%3Ctext x='96' y='135' font-size='90' fill='%23FFFFFF' text-anchor='middle' font-family='system-ui' font-weight='800'%3EF%3C/text%3E%3C/svg%3E",
+        sizes: "192x192",
+        type: "image/svg+xml"
+      }]
+    };
+    
+    const manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
+    const manifestURL = URL.createObjectURL(manifestBlob);
+    const link = document.createElement('link');
+    link.rel = 'manifest';
+    link.href = manifestURL;
+    document.head.appendChild(link);
+  </script>
+</body>
+</html>
