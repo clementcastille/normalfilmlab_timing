@@ -16,11 +16,27 @@
   <!-- Configuration pour transformer l'app en PWA sur iOS : mode standalone (plein écran) -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   
-  <!-- Style de la barre de statut iOS : default = adaptatif selon le contenu -->
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <!-- Style de la barre de statut iOS : black-translucent pour iPhone 11 -->
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   
   <!-- Nom affiché sous l'icône de l'app sur l'écran d'accueil iOS -->
   <meta name="apple-mobile-web-app-title" content="FilmLab">
+  
+  <!-- Icônes pour iOS - multiples tailles pour tous les appareils -->
+  <link rel="apple-touch-icon" sizes="180x180" href="logoapp.png">
+  <link rel="apple-touch-icon" sizes="167x167" href="logoapp.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="logoapp.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="logoapp.png">
+  
+  <!-- Icône générique pour Android et autres -->
+  <link rel="icon" type="image/png" sizes="192x192" href="logoapp.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="logoapp.png">
+  
+  <!-- Splash screen pour iPhone 11 (828x1792) -->
+  <link rel="apple-touch-startup-image" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 828 1792'%3E%3Crect width='828' height='1792' fill='%23FFFFFF'/%3E%3Ctext x='414' y='896' font-size='120' fill='%23008000' text-anchor='middle' font-family='system-ui' font-weight='800'%3EFilmLab%3C/text%3E%3C/svg%3E" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2)">
+  
+  <!-- Description pour le manifest -->
+  <meta name="description" content="Timer professionnel pour développement photo argentique C-41 et N&B">
   
   <style>
     /* ============================================
@@ -250,9 +266,9 @@
     /* Container des champs minutes:secondes */
     .time-fields {
       display: flex;
-      align-items: baseline; /* Aligne sur la ligne de base du texte */
+      align-items: center;
       justify-content: center;
-      gap: 8px; /* Espacement entre les éléments */
+      gap: 4px; /* Espacement réduit entre les éléments */
     }
 
     /* Champs input pour minutes et secondes */
@@ -299,11 +315,13 @@
       font-weight: 800;
       color: #1A1A1A;
       line-height: 1;
+      margin: 0 -2px;
     }
 
     @media (min-width: 768px) {
       .time-separator {
         font-size: 80px;
+        margin: 0 -4px;
       }
     }
 
@@ -441,7 +459,6 @@
 
     /* Icône de réglages (roue dentée) */
     .settings-icon {
-      font-size: 28px;
       cursor: pointer;
       padding: 10px;
       background: none;
@@ -449,10 +466,23 @@
       transition: transform 0.2s;
       line-height: 1;
       margin-left: auto; /* Pousse l'icône à droite */
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .settings-icon:active {
       transform: scale(0.9);
+    }
+    
+    /* SVG de l'icône réglages */
+    .settings-icon svg {
+      width: 32px;
+      height: 32px;
+      fill: #1A1A1A;
+      transition: fill 0.2s;
     }
 
     /* Container du contenu principal des étapes */
@@ -476,9 +506,9 @@
 
     /* Grille des points représentant les étapes */
     .steps-matrix {
-      display: flex;
+      display: grid;
+      grid-template-columns: repeat(5, 32px);
       gap: 12px; /* Espacement entre les points */
-      flex-wrap: wrap; /* Passe à la ligne si nécessaire */
       justify-content: center;
       max-width: 100%;
     }
@@ -659,31 +689,59 @@
       text-align: center;
     }
 
-    /* Affichage du décompte (mm:ss) */
-    .countdown {
+    /* Container du décompte (même structure que time-fields) */
+    .countdown-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    /* Affichage des chiffres du décompte */
+    .countdown-digit {
       font-size: 90px;
       font-weight: 800;
       color: #1A1A1A;
-      letter-spacing: -4px; /* Rapproche les chiffres */
+      letter-spacing: -4px;
       line-height: 1;
     }
 
     @media (min-width: 768px) {
-      .countdown {
-        font-size: 120px; /* Plus grand sur desktop */
+      .countdown-digit {
+        font-size: 120px;
+      }
+    }
+
+    /* Séparateur : du countdown */
+    .countdown-separator {
+      font-size: 60px;
+      font-weight: 800;
+      color: #1A1A1A;
+      line-height: 1;
+      margin: 0 -2px;
+    }
+
+    @media (min-width: 768px) {
+      .countdown-separator {
+        font-size: 80px;
+        margin: 0 -4px;
       }
     }
 
     /* Classe appliquée quand il reste moins de 10 secondes */
-    .countdown.warning {
+    .countdown-digit.warning {
+      color: #d61e33; /* Rouge d'alerte */
+    }
+    
+    .countdown-separator.warning {
       color: #d61e33; /* Rouge d'alerte */
     }
 
     /* Container des points de progression des étapes */
     .progress-dots {
-      display: flex;
+      display: grid;
+      grid-template-columns: repeat(5, 24px);
       gap: 12px;
-      flex-wrap: wrap;
       justify-content: center;
       max-width: 400px;
     }
@@ -711,34 +769,38 @@
     /* Container des boutons de contrôle du timer */
     .timer-controls {
       display: flex;
-      gap: 10px;
+      flex-direction: column;
+      gap: 12px;
       width: 100%;
-      max-width: 600px;
+      max-width: 400px;
       margin: 0 auto;
       flex-shrink: 0;
+      padding: 0 5px;
     }
 
     /* Bouton de contrôle (démarrer, pause, suivant, reset) */
     .control-btn {
-      flex: 1; /* Prend une part égale de l'espace */
-      padding: 16px 12px;
-      font-size: 14px;
+      width: 100%;
+      padding: 24px 16px;
+      font-size: 16px;
       font-weight: 600;
       background: #F5F5F5; /* Gris clair par défaut */
       color: #1A1A1A;
       border: 2px solid #000000; /* Bordure noire */
-      border-radius: 12px;
+      border-radius: 14px;
       cursor: pointer;
       transition: all 0.3s ease;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.8px;
+      min-height: 64px;
     }
 
     @media (min-width: 768px) {
       .control-btn {
-        padding: 20px;
+        padding: 28px 20px;
         font-size: 18px;
         letter-spacing: 1px;
+        min-height: 72px;
       }
     }
 
@@ -1122,6 +1184,35 @@
        MEDIA QUERIES POUR TRÈS PETITS ÉCRANS
        ============================================ */
 
+    /* Optimisations spécifiques pour iPhone 11 (414x896) */
+    @media only screen 
+      and (device-width: 414px) 
+      and (device-height: 896px) 
+      and (-webkit-device-pixel-ratio: 2) {
+      
+      body {
+        /* S'assure que le contenu respecte les zones sûres */
+        padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+      }
+      
+      .process-btn {
+        font-size: 95px; /* Ajusté pour iPhone 11 */
+      }
+      
+      .countdown-digit {
+        font-size: 95px; /* Optimisé pour l'écran de l'iPhone 11 */
+      }
+      
+      .countdown-separator {
+        font-size: 65px;
+      }
+      
+      .control-btn {
+        min-height: 62px; /* Taille optimale pour le pouce */
+        font-size: 16px;
+      }
+    }
+
     /* Écrans de moins de 700px de hauteur */
     @media (max-height: 700px) {
       .countdown {
@@ -1344,8 +1435,12 @@
     <div class="steps-header">
       <!-- Retour vers configuration -->
       <button class="back-to-config" onclick="backToConfig()">&lt;</button>
-      <!-- Bouton réglages (roue dentée) -->
-      <button class="settings-icon" onclick="openSettings()">⚙</button>
+      <!-- Bouton réglages (roue dentée SVG) -->
+      <button class="settings-icon" onclick="openSettings()">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 15.5C10.067 15.5 8.5 13.933 8.5 12C8.5 10.067 10.067 8.5 12 8.5C13.933 8.5 15.5 10.067 15.5 12C15.5 13.933 13.933 15.5 12 15.5ZM19.43 12.97C19.47 12.65 19.5 12.33 19.5 12C19.5 11.67 19.47 11.34 19.43 11L21.54 9.37C21.73 9.22 21.78 8.95 21.66 8.73L19.66 5.27C19.54 5.05 19.27 4.96 19.05 5.05L16.56 6.05C16.04 5.66 15.5 5.32 14.87 5.07L14.5 2.42C14.46 2.18 14.25 2 14 2H10C9.75 2 9.54 2.18 9.5 2.42L9.13 5.07C8.5 5.32 7.96 5.66 7.44 6.05L4.95 5.05C4.73 4.96 4.46 5.05 4.34 5.27L2.34 8.73C2.21 8.95 2.27 9.22 2.46 9.37L4.57 11C4.53 11.34 4.5 11.67 4.5 12C4.5 12.33 4.53 12.65 4.57 12.97L2.46 14.63C2.27 14.78 2.21 15.05 2.34 15.27L4.34 18.73C4.46 18.95 4.73 19.03 4.95 18.95L7.44 17.94C7.96 18.34 8.5 18.68 9.13 18.93L9.5 21.58C9.54 21.82 9.75 22 10 22H14C14.25 22 14.46 21.82 14.5 21.58L14.87 18.93C15.5 18.67 16.04 18.34 16.56 17.94L19.05 18.95C19.27 19.03 19.54 18.95 19.66 18.73L21.66 15.27C21.78 15.05 21.73 14.78 21.54 14.63L19.43 12.97Z"/>
+        </svg>
+      </button>
     </div>
     
     <!-- Contenu principal -->
@@ -1398,8 +1493,12 @@
       <!-- Nom de l'étape en cours -->
       <div class="step-name" id="currentStepName">PRÉ-LAVAGE #1</div>
       
-      <!-- Décompte en grandes chiffres -->
-      <div class="countdown" id="countdown">1:00</div>
+      <!-- Décompte en grandes chiffres (même structure que config) -->
+      <div class="countdown-container" id="countdownContainer">
+        <span class="countdown-digit" id="countdownMinutes">1</span>
+        <span class="countdown-separator">:</span>
+        <span class="countdown-digit" id="countdownSeconds">00</span>
+      </div>
       
       <!-- Points de progression (grille de dots) -->
       <!-- Rempli dynamiquement par JavaScript -->
@@ -1980,17 +2079,24 @@
     function updateCountdownDisplay() {
       const minutes = Math.floor(remainingSeconds / 60);
       const seconds = remainingSeconds % 60;
-      // Format MM:SS avec padding sur les secondes
-      const display = `${minutes}:${seconds.toString().padStart(2, '0')}`;
       
-      const countdownEl = document.getElementById('countdown');
-      countdownEl.textContent = display;
+      // Met à jour les éléments séparés
+      const minutesEl = document.getElementById('countdownMinutes');
+      const secondsEl = document.getElementById('countdownSeconds');
+      const separatorEl = document.querySelector('.countdown-separator');
+      
+      minutesEl.textContent = minutes;
+      secondsEl.textContent = seconds.toString().padStart(2, '0');
       
       // Ajoute la classe warning si <= 10 secondes (change la couleur en rouge)
       if (remainingSeconds <= 10 && remainingSeconds > 0) {
-        countdownEl.classList.add('warning');
+        minutesEl.classList.add('warning');
+        secondsEl.classList.add('warning');
+        if (separatorEl) separatorEl.classList.add('warning');
       } else {
-        countdownEl.classList.remove('warning');
+        minutesEl.classList.remove('warning');
+        secondsEl.classList.remove('warning');
+        if (separatorEl) separatorEl.classList.remove('warning');
       }
     }
 
@@ -2290,21 +2396,31 @@
     
     /**
      * Crée dynamiquement le manifest pour la PWA
-     * Permet l'installation sur l'écran d'accueil mobile
+     * Optimisé pour iPhone 11 (414x896 @2x)
      */
     const manifest = {
       name: "FilmLab Timing", // Nom complet
       short_name: "FilmLab", // Nom court
+      description: "Timer professionnel pour développement photo argentique C-41 et N&B",
       start_url: ".", // URL de départ
       display: "standalone", // Mode plein écran
+      orientation: "portrait", // Orientation portrait forcée
       background_color: "#FFFFFF", // Couleur de fond du splash screen
       theme_color: "#FFFFFF", // Couleur du thème
-      icons: [{
-        // Icône en SVG (lettre F sur fond vert)
-        src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' fill='%23008000' rx='42'/%3E%3Ctext x='96' y='135' font-size='90' fill='%23FFFFFF' text-anchor='middle' font-family='system-ui' font-weight='800'%3EF%3C/text%3E%3C/svg%3E",
-        sizes: "192x192",
-        type: "image/svg+xml"
-      }]
+      icons: [
+        {
+          src: "logoapp.png",
+          sizes: "192x192",
+          type: "image/png",
+          purpose: "any maskable"
+        },
+        {
+          src: "logoapp.png",
+          sizes: "512x512",
+          type: "image/png",
+          purpose: "any maskable"
+        }
+      ]
     };
     
     // Crée un blob et une URL pour le manifest
