@@ -40,6 +40,45 @@
   
   <style>
     /* ============================================
+       BOUTONS RETOUR COMMUNS
+       ============================================ */
+    
+    /* Police commune pour tous les chiffres de chrono */
+    .chrono-font {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums; /* Chiffres de largeur fixe */
+      letter-spacing: -4px;
+    }
+    
+    /* Style commun pour tous les boutons retour */
+    .back-btn {
+      position: absolute;
+      left: 20px;
+      top: 20px;
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      background: none;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s;
+    }
+    
+    .back-btn:active {
+      transform: scale(0.9);
+    }
+    
+    .back-btn svg {
+      width: 28px;
+      height: 28px;
+      fill: #1A1A1A;
+    }
+
+    /* ============================================
        RESET ET CONFIGURATION GLOBALE
        ============================================ */
     
@@ -169,6 +208,7 @@
       padding: max(60px, env(safe-area-inset-top)) 30px max(25px, env(safe-area-inset-bottom));
       align-items: center;
       position: relative; /* Pour le bouton retour en position absolue */
+      overflow: hidden; /* Empêche tout scroll */
     }
 
     /* Augmente le padding sur grand écran */
@@ -178,24 +218,9 @@
       }
     }
 
-    /* Bouton de retour (flèche <) */
+    /* Bouton de retour config (hérite du style .back-btn) */
     .config-back-btn {
-      font-size: 40px;
-      padding: 5px;
-      background: none;
-      border: none;
-      cursor: pointer;
-      line-height: 1;
-      font-weight: 300; /* Police fine */
-      position: absolute; /* Positionné en haut à gauche */
-      left: 30px;
-      top: 60px;
-      color: #000000;
-    }
-
-    /* Effet au tap sur le bouton retour */
-    .config-back-btn:active {
-      transform: scale(0.9); /* Légère réduction */
+      /* Tous les styles sont hérités de .back-btn */
     }
 
     /* Titre de la page de configuration */
@@ -284,6 +309,8 @@
       line-height: 1;
       letter-spacing: -4px; /* Rapproche les chiffres */
       text-align: center;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+      font-variant-numeric: tabular-nums; /* Chiffres de largeur fixe */
     }
 
     @media (min-width: 768px) {
@@ -316,6 +343,7 @@
       color: #1A1A1A;
       line-height: 1;
       margin: 0 -2px;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
     }
 
     @media (min-width: 768px) {
@@ -367,8 +395,7 @@
       flex-direction: column;
       padding: max(10px, env(safe-area-inset-top)) 30px max(40px, env(safe-area-inset-bottom));
       align-items: center;
-      overflow-y: auto; /* Permet le scroll vertical si nécessaire */
-      -webkit-overflow-scrolling: touch; /* Scroll fluide sur iOS */
+      overflow: hidden; /* Empêche le scroll de l'écran entier */
     }
 
     /* Header avec bouton retour et bouton réglages */
@@ -382,23 +409,9 @@
       position: relative;
     }
 
-    /* Bouton retour vers la config */
+    /* Bouton retour vers la config (hérite du style .back-btn) */
     .back-to-config {
-      font-size: 40px;
-      cursor: pointer;
-      padding: 5px;
-      background: none;
-      border: none;
-      line-height: 1;
-      font-weight: 300;
-      color: #1A1A1A;
-      position: absolute; /* Positionné à gauche */
-      left: 0;
-      top: 0;
-    }
-
-    .back-to-config:active {
-      transform: scale(0.9);
+      /* Tous les styles sont hérités de .back-btn */
     }
 
     /* Container de la progression et du temps total */
@@ -409,6 +422,7 @@
       width: 100%;
       max-width: 500px;
       margin-top: 5px;
+      flex-shrink: 0; /* Ne se réduit jamais - reste fixe */
     }
 
     /* Container du pourcentage de progression */
@@ -447,6 +461,8 @@
       font-weight: 700;
       color: #1A1A1A;
       line-height: 1;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+      font-variant-numeric: tabular-nums; /* Chiffres de largeur fixe */
     }
 
     /* Label "total" */
@@ -493,6 +509,9 @@
       gap: 20px;
       width: 100%;
       max-width: 600px;
+      flex: 1; /* Prend l'espace disponible */
+      overflow: hidden; /* Pas de scroll sur ce container */
+      min-height: 0; /* Important pour que le scroll fonctionne dans flexbox */
     }
 
     /* Titre "étapes" */
@@ -502,6 +521,7 @@
       color: #1A1A1A;
       text-transform: lowercase;
       text-align: center;
+      flex-shrink: 0; /* Ne se réduit jamais - reste fixe */
     }
 
     /* Grille des points représentant les étapes */
@@ -511,6 +531,7 @@
       gap: 12px; /* Espacement entre les points */
       justify-content: center;
       max-width: 100%;
+      flex-shrink: 0; /* Ne se réduit jamais - reste fixe */
     }
 
     /* Un point représentant une étape */
@@ -555,8 +576,10 @@
       gap: 8px;
       width: 100%;
       max-width: 500px;
-      max-height: 500px;
-      overflow-y: auto; /* Scroll si trop d'étapes */
+      flex: 1; /* Prend l'espace disponible */
+      overflow-y: auto; /* Scroll uniquement cette liste */
+      -webkit-overflow-scrolling: touch; /* Scroll fluide sur iOS */
+      min-height: 0; /* Important pour le scroll dans flexbox */
     }
 
     /* Une ligne de détail d'étape (nom + durée) */
@@ -587,17 +610,19 @@
     .step-detail-time {
       font-weight: 700;
       color: #666666;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+      font-variant-numeric: tabular-nums; /* Chiffres de largeur fixe */
     }
 
     /* Container du bas avec le bouton démarrer */
     .steps-bottom {
-      margin-top: auto; /* Pousse vers le bas */
       padding-top: 15px;
       padding-bottom: 20px;
       width: 100%;
       max-width: 600px;
       display: flex;
       justify-content: center;
+      flex-shrink: 0; /* Ne se réduit jamais */
     }
 
     /* Bouton "démarrer" le processus */
@@ -632,6 +657,7 @@
       flex-direction: column;
       padding: max(20px, env(safe-area-inset-top)) 20px max(20px, env(safe-area-inset-bottom));
       justify-content: space-between; /* Header en haut, contenu au centre, contrôles en bas */
+      overflow: hidden; /* Empêche tout scroll */
     }
 
     /* Header du timer avec bouton retour */
@@ -647,24 +673,9 @@
       position: relative;
     }
 
-    /* Bouton flèche retour */
+    /* Bouton flèche retour timer (hérite du style .back-btn) */
     .back-arrow {
-      font-size: 40px;
-      cursor: pointer;
-      padding: 5px;
-      background: none;
-      border: none;
-      transition: transform 0.2s;
-      line-height: 1;
-      font-weight: 300;
-      position: absolute;
-      left: 0;
-      top: 0;
-      color: #000000;
-    }
-
-    .back-arrow:active {
-      transform: scale(0.9);
+      /* Tous les styles sont hérités de .back-btn */
     }
 
     /* Contenu principal du timer (nom étape + décompte + points) */
@@ -704,6 +715,8 @@
       color: #1A1A1A;
       letter-spacing: -4px;
       line-height: 1;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+      font-variant-numeric: tabular-nums; /* Chiffres de largeur fixe */
     }
 
     @media (min-width: 768px) {
@@ -719,6 +732,7 @@
       color: #1A1A1A;
       line-height: 1;
       margin: 0 -2px;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
     }
 
     @media (min-width: 768px) {
@@ -842,13 +856,12 @@
     
     /* Container de l'écran de réglages */
     .settings-screen {
-      min-height: 100vh; /* Hauteur minimum = hauteur viewport */
-      min-height: 100dvh;
+      height: 100vh;
+      height: 100dvh;
       display: flex;
       flex-direction: column;
       padding: max(15px, env(safe-area-inset-top)) 20px max(20px, env(safe-area-inset-bottom));
-      overflow-y: auto; /* Scroll vertical si nécessaire */
-      -webkit-overflow-scrolling: touch;
+      overflow: hidden; /* Empêche le scroll de l'écran entier */
     }
 
     @media (min-width: 768px) {
@@ -1353,8 +1366,12 @@
        Permet de paramétrer les durées du révélateur et bleach
        ============================================ -->
   <div id="configC41Screen" class="config-screen hidden">
-    <!-- Bouton retour vers l'accueil -->
-    <button class="config-back-btn" onclick="backToWelcome()">&lt;</button>
+    <!-- Bouton retour vers l'accueil avec icône SVG -->
+    <button class="back-btn config-back-btn" onclick="backToWelcome()">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+      </svg>
+    </button>
     
     <div class="time-inputs">
       <!-- Titre -->
@@ -1395,7 +1412,12 @@
        Permet de paramétrer les durées du révélateur et fixateur
        ============================================ -->
   <div id="configNBScreen" class="config-screen hidden">
-    <button class="config-back-btn" onclick="backToWelcome()">&lt;</button>
+    <!-- Bouton retour vers l'accueil avec icône SVG -->
+    <button class="back-btn config-back-btn" onclick="backToWelcome()">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+      </svg>
+    </button>
     
     <div class="time-inputs">
       <div class="config-title">configuration</div>
@@ -1433,8 +1455,12 @@
   <div id="stepsScreen" class="steps-screen hidden">
     <!-- Header avec boutons navigation -->
     <div class="steps-header">
-      <!-- Retour vers configuration -->
-      <button class="back-to-config" onclick="backToConfig()">&lt;</button>
+      <!-- Retour vers configuration avec icône SVG -->
+      <button class="back-btn back-to-config" onclick="backToConfig()">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+        </svg>
+      </button>
       <!-- Bouton réglages (roue dentée SVG) -->
       <button class="settings-icon" onclick="openSettings()">
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -1484,7 +1510,12 @@
   <div id="timerScreen" class="timer-screen hidden">
     <!-- Header avec bouton retour -->
     <div class="timer-header">
-      <button class="back-arrow" onclick="backToSteps()">&lt;</button>
+      <!-- Bouton retour avec icône SVG -->
+      <button class="back-btn back-arrow" onclick="backToSteps()">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+        </svg>
+      </button>
       <div></div> <!-- Div vide pour équilibrer le flexbox -->
     </div>
     
