@@ -15,7 +15,7 @@
   <link rel="icon" type="image/png" sizes="192x192" href="logoapp.png">
   <link rel="icon" type="image/png" sizes="512x512" href="logoapp.png">
   <link rel="apple-touch-startup-image" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 828 1792'%3E%3Crect width='828' height='1792' fill='%23FFFFFF'/%3E%3Ctext x='414' y='896' font-size='120' fill='%23008000' text-anchor='middle' font-family='system-ui' font-weight='800'%3EFilmLab%3C/text%3E%3C/svg%3E" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2)">
-  <meta name="description" content="Timer professionnel pour développement photo argentique C-41 et N&B">
+  <meta name="description" content="Professional timer for C-41 and B&W film development">
   
   <style>
     .chrono-font {
@@ -289,8 +289,8 @@
       padding: 20px 60px;
       font-size: 18px;
       font-weight: 700;
-      background: #FFA500;
-      color: #000000;
+      background: #000000;
+      color: #FFFFFF;
       border: none;
       border-radius: 100px;
       cursor: pointer;
@@ -317,7 +317,7 @@
       height: 100dvh;
       display: flex;
       flex-direction: column;
-      padding: max(80px, calc(env(safe-area-inset-top) + 60px)) 30px max(80px, env(safe-area-inset-bottom));
+      padding: max(70px, calc(env(safe-area-inset-top) + 50px)) 30px max(80px, env(safe-area-inset-bottom));
       align-items: center;
       overflow: hidden;
     }
@@ -444,7 +444,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 20px;
+      gap: 15px;
       width: 100%;
       max-width: 600px;
       flex: 1;
@@ -453,7 +453,7 @@
     }
 
     .steps-title {
-      font-size: 28px;
+      font-size: 20px;
       font-weight: 700;
       color: #1A1A1A;
       text-transform: lowercase;
@@ -464,15 +464,15 @@
     .steps-matrix {
       display: flex;
       flex-wrap: wrap;
-      gap: 12px;
+      gap: 8px;
       justify-content: center;
-      max-width: 220px;
+      max-width: 160px;
       flex-shrink: 0;
     }
 
     .step-dot {
-      width: 32px;
-      height: 32px;
+      width: 20px;
+      height: 20px;
       border-radius: 50%;
       background: #E0E0E0;
       transition: all 0.3s ease;
@@ -482,7 +482,7 @@
     }
 
     .step-dot.completed {
-      background: #FFA500;
+      background: #FF7518;
     }
 
     .step-dot:hover::after {
@@ -524,15 +524,15 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 12px 20px;
+      padding: 10px 20px;
       background: #F5F5F5;
       border-radius: 10px;
-      font-size: 14px;
+      font-size: 15px;
       transition: all 0.2s ease;
     }
 
     .step-detail-item.completed {
-      background: #FFA500;
+      background: #FF7518;
     }
 
     .step-detail-name {
@@ -563,8 +563,8 @@
       padding: 20px 60px;
       font-size: 18px;
       font-weight: 700;
-      background: #FFA500;
-      color: #000000;
+      background: #000000;
+      color: #FFFFFF;
       border: none;
       border-radius: 100px;
       cursor: pointer;
@@ -745,6 +745,12 @@
     .control-btn.reset {
       background: #e84033;
       color: #FFFFFF;
+    }
+
+    .control-btn.disabled {
+      background: #E0E0E0;
+      color: #999999;
+      cursor: not-allowed;
     }
 
     .control-btn:active {
@@ -1314,7 +1320,7 @@
       
       <div class="time-inputs-container">
         <div class="time-input-row">
-          <label>révélateur</label>
+          <label>developer</label>
           <div class="time-fields">
             <input type="number" id="revMin" min="0" max="99" value="00">
             <span class="time-separator">:</span>
@@ -1333,7 +1339,7 @@
       </div>
     </div>
     
-    <button class="validate-btn" onclick="validateC41()">valider</button>
+    <button class="validate-btn" onclick="validateC41()">validate</button>
   </div>
 
   <div id="configNBScreen" class="config-screen hidden">
@@ -1348,7 +1354,7 @@
       
       <div class="time-inputs-container">
         <div class="time-input-row">
-          <label>révélateur</label>
+          <label>developer</label>
           <div class="time-fields">
             <input type="number" id="nbRevMin" min="0" max="99" value="00">
             <span class="time-separator">:</span>
@@ -1357,7 +1363,7 @@
         </div>
         
         <div class="time-input-row">
-          <label>fixateur</label>
+          <label>fixer</label>
           <div class="time-fields">
             <input type="number" id="nbFixMin" min="0" max="99" value="00">
             <span class="time-separator">:</span>
@@ -1367,7 +1373,7 @@
       </div>
     </div>
     
-    <button class="validate-btn" onclick="validateNB()">valider</button>
+    <button class="validate-btn" onclick="validateNB()">validate</button>
   </div>
 
   <div id="stepsScreen" class="steps-screen hidden">
@@ -1385,7 +1391,7 @@
     </div>
     
     <div class="steps-content">
-      <div class="steps-title">étapes</div>
+      <div class="steps-title">steps</div>
       
       <div class="steps-matrix" id="stepsMatrix"></div>
       
@@ -1404,7 +1410,7 @@
     </div>
     
     <div class="steps-bottom">
-      <button class="start-btn" onclick="startProcess()">démarrer</button>
+      <button class="start-btn" onclick="startProcess()">start</button>
     </div>
   </div>
 
@@ -1419,7 +1425,7 @@
     </div>
     
     <div class="timer-main">
-      <div class="step-name" id="currentStepName">PRÉ-LAVAGE #1</div>
+      <div class="step-name" id="currentStepName">PRE-WASH #1</div>
       
       <div class="countdown-container" id="countdownContainer">
         <span class="countdown-digit" id="countdownMinutes">1</span>
@@ -1431,9 +1437,9 @@
     </div>
     
     <div class="timer-controls">
-      <button class="control-btn primary" id="playPauseBtn" onclick="toggleTimer()">DÉMARRER</button>
+      <button class="control-btn primary" id="playPauseBtn" onclick="toggleTimer()">START</button>
       
-      <button class="control-btn" id="skipBtn" onclick="skipStep()">SUIVANT</button>
+      <button class="control-btn" id="skipBtn" onclick="skipStep()">NEXT</button>
       
       <button class="control-btn reset" id="resetBtn" onclick="resetTimer()">RESET</button>
     </div>
@@ -1446,27 +1452,27 @@
 
   <div id="settingsScreen" class="settings-screen hidden">
     <div class="settings-header">
-      <h2>réglages</h2>
+      <h2>settings</h2>
       <button class="close-icon" onclick="closeSettings()">×</button>
     </div>
     
     <div class="settings-list" id="settingsList"></div>
     
     <div class="settings-actions">
-      <button class="add-step-btn" onclick="addNewStep()">+ ajouter une étape</button>
+      <button class="add-step-btn" onclick="addNewStep()">+ add step</button>
     </div>
     
     <div class="settings-actions">
-      <button class="save-btn" onclick="saveSettings()">sauvegarder</button>
+      <button class="save-btn" onclick="saveSettings()">save</button>
     </div>
   </div>
 
   <div id="confirmModal" class="modal-overlay hidden">
     <div class="modal-content">
-      <div class="modal-message">Êtes-vous sûr de vouloir recommencer depuis le début ?</div>
+      <div class="modal-message">Reset the current step timer to 0:00?</div>
       <div class="modal-buttons">
         <button class="modal-btn modal-btn-confirm" onclick="confirmReset()">RESET</button>
-        <button class="modal-btn modal-btn-cancel" onclick="closeModal()">annuler</button>
+        <button class="modal-btn modal-btn-cancel" onclick="closeModal()">cancel</button>
       </div>
     </div>
   </div>
@@ -1479,6 +1485,30 @@
     let isRunning = false;
     let completedSteps = [];
     let currentProcess = '';
+    let wakeLock = null;
+
+    async function requestWakeLock() {
+      try {
+        if ('wakeLock' in navigator) {
+          wakeLock = await navigator.wakeLock.request('screen');
+          console.log('Wake Lock activé');
+        }
+      } catch (err) {
+        console.log('Wake Lock non disponible:', err);
+      }
+    }
+
+    async function releaseWakeLock() {
+      if (wakeLock !== null) {
+        try {
+          await wakeLock.release();
+          wakeLock = null;
+          console.log('Wake Lock désactivé');
+        } catch (err) {
+          console.log('Erreur Wake Lock:', err);
+        }
+      }
+    }
 
     function backToWelcome() {
       document.getElementById('configC41Screen').classList.add('hidden');
@@ -1523,7 +1553,7 @@
           const revDuration = revMin * 60 + revSec;
           const bleachDuration = bleachMin * 60 + bleachSec;
           
-          const revIndex = currentSteps.findIndex(s => s.name.includes('RÉVÉLATEUR') && !s.name.includes('LAVAGE'));
+          const revIndex = currentSteps.findIndex(s => s.name.includes('DEVELOPER') && !s.name.includes('WASH'));
           const bleachIndex = currentSteps.findIndex(s => s.name === 'BLEACH');
           
           if (revIndex >= 0) currentSteps[revIndex].duration = revDuration;
@@ -1555,8 +1585,8 @@
           const revDuration = revMin * 60 + revSec;
           const fixDuration = fixMin * 60 + fixSec;
           
-          const revIndex = currentSteps.findIndex(s => s.name.includes('RÉVÉLATEUR') && !s.name.includes('LAVAGE'));
-          const fixIndex = currentSteps.findIndex(s => s.name === 'FIXATEUR');
+          const revIndex = currentSteps.findIndex(s => s.name.includes('DEVELOPER') && !s.name.includes('WASH'));
+          const fixIndex = currentSteps.findIndex(s => s.name === 'FIXER');
           
           if (revIndex >= 0) currentSteps[revIndex].duration = revDuration;
           if (fixIndex >= 0) currentSteps[fixIndex].duration = fixDuration;
@@ -1580,11 +1610,11 @@
       const fixDuration = fixMin * 60 + fixSec;
       
       currentSteps = [
-        { name: 'PRÉ-LAVAGE', duration: 60 },
-        { name: 'RÉVÉLATEUR', duration: revDuration },
-        { name: 'LAVAGE RÉVÉLATEUR', duration: 60 },
-        { name: 'FIXATEUR', duration: fixDuration },
-        { name: 'LAVAGE FIXATEUR', duration: 60 }
+        { name: 'PRE-WASH', duration: 60 },
+        { name: 'DEVELOPER', duration: revDuration },
+        { name: 'WASH DEVELOPER', duration: 60 },
+        { name: 'FIXER', duration: fixDuration },
+        { name: 'WASH FIXER', duration: 60 }
       ];
     }
     
@@ -1598,15 +1628,15 @@
       const bleachDuration = bleachMin * 60 + bleachSec;
       
       currentSteps = [
-        { name: 'PRÉ-LAVAGE #1', duration: 60 },
-        { name: 'PRÉ-LAVAGE #2', duration: 60 },
-        { name: 'RÉVÉLATEUR', duration: revDuration },
-        { name: 'LAVAGE RÉVÉLATEUR', duration: 60 },
+        { name: 'PRE-WASH #1', duration: 60 },
+        { name: 'PRE-WASH #2', duration: 60 },
+        { name: 'DEVELOPER', duration: revDuration },
+        { name: 'WASH DEVELOPER', duration: 60 },
         { name: 'BLEACH', duration: bleachDuration },
-        { name: 'LAVAGE BLEACH #1', duration: 60 },
-        { name: 'LAVAGE BLEACH #2', duration: 60 },
-        { name: 'STABILISATEUR', duration: 60 },
-        { name: 'LAVAGE STABILISATEUR', duration: 60 }
+        { name: 'WASH BLEACH #1', duration: 60 },
+        { name: 'WASH BLEACH #2', duration: 60 },
+        { name: 'STABILIZER', duration: 60 },
+        { name: 'WASH STABILIZER', duration: 60 }
       ];
     }
 
@@ -1656,7 +1686,7 @@
         
         detailItem.innerHTML = `
           <div class="step-detail-name">${step.name}</div>
-          <div class="step-detail-time">${minutes}:${seconds.toString().padStart(2, '0')}</div>
+          <div class="step-detail-time">_ ${minutes}:${seconds.toString().padStart(2, '0')}</div>
         `;
         
         stepsDetails.appendChild(detailItem);
@@ -1685,7 +1715,7 @@
       
       isRunning = false;
       const btn = document.getElementById('playPauseBtn');
-      btn.textContent = 'DÉMARRER';
+      btn.textContent = 'START';
       btn.classList.remove('pause', 'resume');
       btn.classList.add('primary');
     }
@@ -1701,6 +1731,8 @@
     function startTimer() {
       isRunning = true;
       
+      requestWakeLock();
+      
       const btn = document.getElementById('playPauseBtn');
       btn.textContent = 'PAUSE';
       btn.classList.remove('resume', 'primary');
@@ -1713,8 +1745,15 @@
         
         if (remainingSeconds <= 0) {
           clearInterval(timerInterval);
+          isRunning = false;
+          releaseWakeLock();
           playStepCompleteSound();
-          nextStep();
+          
+          const btn = document.getElementById('playPauseBtn');
+          btn.textContent = 'DONE';
+          btn.classList.remove('pause', 'resume', 'primary');
+          btn.classList.add('disabled');
+          btn.disabled = true;
         }
       }, 1000);
     }
@@ -1733,8 +1772,10 @@
       isRunning = false;
       clearInterval(timerInterval);
       
+      releaseWakeLock();
+      
       const btn = document.getElementById('playPauseBtn');
-      btn.textContent = 'REPRENDRE';
+      btn.textContent = 'RESUME';
       btn.classList.remove('primary');
       btn.classList.add('resume');
     }
@@ -1745,6 +1786,10 @@
       if (currentStepIndex < currentSteps.length - 1) {
         currentStepIndex++;
         initTimer();
+        
+        const btn = document.getElementById('playPauseBtn');
+        btn.disabled = false;
+        btn.classList.remove('disabled');
       } else {
         showCompletionScreen();
       }
@@ -1752,11 +1797,16 @@
 
     function skipStep() {
       clearInterval(timerInterval);
+      releaseWakeLock();
       completedSteps.push(currentStepIndex);
       
       if (currentStepIndex < currentSteps.length - 1) {
         currentStepIndex++;
         initTimer();
+        
+        const btn = document.getElementById('playPauseBtn');
+        btn.disabled = false;
+        btn.classList.remove('disabled');
       } else {
         showCompletionScreen();
       }
@@ -1766,12 +1816,14 @@
       clearInterval(timerInterval);
       isRunning = false;
       
+      releaseWakeLock();
+      
       document.getElementById('timerScreen').classList.add('hidden');
       document.getElementById('stepsScreen').classList.remove('hidden');
       displaySteps();
       
       const startBtn = document.querySelector('.start-btn');
-      startBtn.textContent = 'nouveau développement';
+      startBtn.textContent = 'new development';
       startBtn.style.padding = '20px 40px';
       startBtn.style.width = 'auto';
       
@@ -1779,7 +1831,7 @@
         currentStepIndex = 0;
         completedSteps = [];
         
-        startBtn.textContent = 'démarrer';
+        startBtn.textContent = 'start';
         startBtn.style.padding = '20px 60px';
         startBtn.style.width = 'auto';
         startBtn.onclick = startProcess;
@@ -1790,6 +1842,12 @@
     }
 
     function resetTimer() {
+      const step = currentSteps[currentStepIndex];
+      const minutes = Math.floor(step.duration / 60);
+      const seconds = step.duration % 60;
+      const timeDisplay = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+      
+      document.querySelector('.modal-message').textContent = `Reset the current step timer to ${timeDisplay} ?`;
       document.getElementById('confirmModal').classList.remove('hidden');
     }
 
@@ -1801,20 +1859,27 @@
       closeModal();
       clearInterval(timerInterval);
       isRunning = false;
-      currentStepIndex = 0;
-      completedSteps = [];
+      
+      releaseWakeLock();
+      
+      const step = currentSteps[currentStepIndex];
+      remainingSeconds = step.duration;
+      
+      updateCountdownDisplay();
       
       const btn = document.getElementById('playPauseBtn');
-      btn.textContent = 'DÉMARRER';
-      btn.classList.remove('pause', 'resume');
+      btn.textContent = 'START';
+      btn.classList.remove('pause', 'resume', 'disabled');
       btn.classList.add('primary');
-      
-      initTimer();
+      btn.disabled = false;
     }
 
     function backToSteps() {
       clearInterval(timerInterval);
       isRunning = false;
+      
+      releaseWakeLock();
+      
       document.getElementById('timerScreen').classList.add('hidden');
       document.getElementById('stepsScreen').classList.remove('hidden');
       displaySteps();
@@ -1981,7 +2046,7 @@
 
     function addNewStep() {
       currentSteps.push({
-        name: 'NOUVELLE ÉTAPE',
+        name: 'NEW STEP',
         duration: 60
       });
       displaySettings();
@@ -1994,6 +2059,10 @@
     }
 
     window.addEventListener('DOMContentLoaded', () => {
+      // Force la mise à jour des étapes en anglais
+      localStorage.removeItem('c41_steps');
+      localStorage.removeItem('nb_steps');
+      
       const saved = localStorage.getItem('c41_steps');
       if (saved) {
         try {
@@ -2038,7 +2107,7 @@
     const manifest = {
       name: "FilmLab Timing",
       short_name: "FilmLab",
-      description: "Timer professionnel pour développement photo argentique C-41 et N&B",
+      description: "Professional timer for C-41 and B&W film development",
       start_url: ".",
       display: "standalone",
       orientation: "portrait",
