@@ -888,6 +888,22 @@
       color: #666666;
     }
 
+    .drag-handle {
+      font-size: 24px;
+      color: #999999;
+      cursor: grab;
+      user-select: none;
+      padding: 0 8px;
+      display: flex;
+      align-items: center;
+      touch-action: none;
+    }
+
+    .drag-handle:active {
+      cursor: grabbing;
+      color: #666666;
+    }
+
     @media (min-width: 768px) {
       .setting-item .order-number {
         min-width: 28px;
@@ -923,6 +939,46 @@
       gap: 6px;
       align-items: center;
       flex-shrink: 0;
+    }
+
+    .time-display {
+      font-size: 14px;
+      font-weight: 700;
+      color: #1A1A1A;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 6px;
+      transition: background 0.2s;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .time-display:hover {
+      background: #E0E0E0;
+    }
+
+    .time-edit-container {
+      display: flex;
+      gap: 2px;
+      align-items: center;
+    }
+
+    .time-edit-input {
+      padding: 2px 4px;
+      font-size: 14px;
+      text-align: center;
+      border: 1px solid #CCCCCC;
+      border-radius: 4px;
+      background: #FFFFFF;
+      font-weight: 700;
+      width: 40px;
+      color: #1A1A1A;
+    }
+
+    .time-edit-separator {
+      font-size: 14px;
+      font-weight: 700;
+      color: #1A1A1A;
     }
 
     .setting-item .controls-wrapper {
@@ -1016,13 +1072,13 @@
     }
 
     .add-step-btn {
-      padding: 14px;
+      padding: 14px 40px;
       font-size: 15px;
       font-weight: 700;
       background: #F5F5F5;
       color: #1A1A1A;
       border: none;
-      border-radius: 10px;
+      border-radius: 100px;
       cursor: pointer;
       transition: all 0.2s ease;
       text-transform: lowercase;
@@ -1030,7 +1086,7 @@
       max-width: 600px;
       margin-left: auto;
       margin-right: auto;
-      width: 100%;
+      width: auto;
       flex-shrink: 0;
     }
 
@@ -1054,6 +1110,7 @@
       margin: 12px auto 0;
       width: 100%;
       flex-shrink: 0;
+      justify-content: center;
     }
 
     @media (min-width: 768px) {
@@ -1063,18 +1120,18 @@
     }
 
     .save-btn {
-      flex: 1;
-      padding: 16px;
+      padding: 16px 50px;
       font-size: 16px;
       font-weight: 700;
       background: #000000;
       color: #FFFFFF;
       border: none;
-      border-radius: 16px;
+      border-radius: 100px;
       cursor: pointer;
       transition: all 0.3s ease;
       text-transform: lowercase;
       box-shadow: 0 3px 0 0 #E0E0E0;
+      width: auto;
     }
 
     @media (min-width: 768px) {
@@ -1970,6 +2027,12 @@
         orderNum.className = 'order-number';
         orderNum.textContent = (index + 1);
         
+        // Poignée de drag
+        const dragHandle = document.createElement('div');
+        dragHandle.className = 'drag-handle';
+        dragHandle.innerHTML = '≡';
+        dragHandle.setAttribute('data-index', index);
+        
         const nameInput = document.createElement('input');
         nameInput.type = 'text';
         nameInput.value = step.name;
@@ -1980,21 +2043,34 @@
         const timeGroup = document.createElement('div');
         timeGroup.className = 'time-group';
         
+        // Afficher le temps au format _ MM:SS
+        const timeDisplay = document.createElement('div');
+        timeDisplay.className = 'time-display';
+        const minutes = Math.floor(step.duration / 60);
+        const seconds = step.duration % 60;
+        timeDisplay.textContent = `_ ${minutes}:${seconds.toString().padStart(2, '0')}`;
+        
+        // Inputs cachés pour la modification (on les affichera au clic)
+        const timeEditContainer = document.createElement('div');
+        timeEditContainer.className = 'time-edit-container hidden';
+        
         const minInput = document.createElement('input');
         minInput.type = 'number';
         minInput.min = '0';
         minInput.value = Math.floor(step.duration / 60);
         minInput.inputMode = 'numeric';
         minInput.pattern = '[0-9]*';
+        minInput.className = 'time-edit-input';
         minInput.oninput = (e) => {
           const mins = parseInt(e.target.value) || 0;
           const secs = currentSteps[index].duration % 60;
           currentSteps[index].duration = mins * 60 + secs;
+          updateTimeDisplay();
         };
         
-        const minLabel = document.createElement('span');
-        minLabel.className = 'time-label';
-        minLabel.textContent = 'min';
+        const separator = document.createElement('span');
+        separator.textContent = ':';
+        separator.className = 'time-edit-separator';
         
         const secInput = document.createElement('input');
         secInput.type = 'number';
@@ -2003,33 +2079,43 @@
         secInput.value = step.duration % 60;
         secInput.inputMode = 'numeric';
         secInput.pattern = '[0-9]*';
+        secInput.className = 'time-edit-input';
         secInput.oninput = (e) => {
           const mins = Math.floor(currentSteps[index].duration / 60);
           const secs = parseInt(e.target.value) || 0;
           currentSteps[index].duration = mins * 60 + secs;
+          updateTimeDisplay();
         };
         
-        const secLabel = document.createElement('span');
-        secLabel.className = 'time-label';
-        secLabel.textContent = 'sec';
+        function updateTimeDisplay() {
+          const mins = Math.floor(currentSteps[index].duration / 60);
+          const secs = currentSteps[index].duration % 60;
+          timeDisplay.textContent = `_ ${mins}:${secs.toString().padStart(2, '0')}`;
+        }
         
-        timeGroup.appendChild(minInput);
-        timeGroup.appendChild(minLabel);
-        timeGroup.appendChild(secInput);
-        timeGroup.appendChild(secLabel);
+        // Toggle entre affichage et édition au clic
+        timeDisplay.onclick = () => {
+          timeDisplay.classList.add('hidden');
+          timeEditContainer.classList.remove('hidden');
+          minInput.focus();
+        };
         
-        const upBtn = document.createElement('button');
-        upBtn.className = 'icon-btn';
-        upBtn.textContent = '↑';
-        upBtn.onclick = () => moveStep(index, -1);
-        if (index === 0) upBtn.style.visibility = 'hidden';
+        const closeEdit = () => {
+          timeDisplay.classList.remove('hidden');
+          timeEditContainer.classList.add('hidden');
+        };
         
-        const downBtn = document.createElement('button');
-        downBtn.className = 'icon-btn';
-        downBtn.textContent = '↓';
-        downBtn.onclick = () => moveStep(index, 1);
-        if (index === currentSteps.length - 1) downBtn.style.visibility = 'hidden';
+        minInput.onblur = closeEdit;
+        secInput.onblur = closeEdit;
         
+        timeEditContainer.appendChild(minInput);
+        timeEditContainer.appendChild(separator);
+        timeEditContainer.appendChild(secInput);
+        
+        timeGroup.appendChild(timeDisplay);
+        timeGroup.appendChild(timeEditContainer);
+        
+        // Bouton supprimer uniquement
         const deleteBtn = document.createElement('button');
         deleteBtn.className = 'icon-btn';
         deleteBtn.textContent = '×';
@@ -2039,10 +2125,9 @@
         
         const controlsWrapper = document.createElement('div');
         controlsWrapper.className = 'controls-wrapper';
-        controlsWrapper.appendChild(upBtn);
-        controlsWrapper.appendChild(downBtn);
         controlsWrapper.appendChild(deleteBtn);
         
+        settingItem.appendChild(dragHandle);
         settingItem.appendChild(orderNum);
         settingItem.appendChild(nameInput);
         settingItem.appendChild(timeGroup);
@@ -2050,6 +2135,72 @@
         
         settingsList.appendChild(settingItem);
       });
+      
+      // Initialiser le drag & drop
+      initDragAndDrop();
+    }
+
+    // Variables pour le drag & drop
+    let draggedIndex = null;
+    let touchStartY = 0;
+    let draggedElement = null;
+
+    // Initialiser le drag & drop après l'affichage
+    function initDragAndDrop() {
+      const settingsList = document.getElementById('settingsList');
+      
+      settingsList.addEventListener('touchstart', (e) => {
+        const handle = e.target.closest('.drag-handle');
+        if (!handle) return;
+        
+        draggedIndex = parseInt(handle.getAttribute('data-index'));
+        draggedElement = handle.closest('.setting-item');
+        touchStartY = e.touches[0].clientY;
+        
+        draggedElement.style.opacity = '0.5';
+        draggedElement.style.transform = 'scale(1.05)';
+      }, { passive: true });
+      
+      settingsList.addEventListener('touchmove', (e) => {
+        if (draggedIndex === null) return;
+        
+        const touchY = e.touches[0].clientY;
+        const deltaY = touchY - touchStartY;
+        
+        draggedElement.style.transform = `translateY(${deltaY}px) scale(1.05)`;
+        
+        // Déterminer sur quel élément on survole
+        const items = Array.from(settingsList.querySelectorAll('.setting-item'));
+        const afterElement = items.find((item, idx) => {
+          if (idx === draggedIndex) return false;
+          const box = item.getBoundingClientRect();
+          return touchY < box.top + box.height / 2;
+        });
+        
+        const currentItem = items[draggedIndex];
+        if (afterElement) {
+          const afterIndex = items.indexOf(afterElement);
+          if (afterIndex !== draggedIndex) {
+            // Échanger les éléments dans le tableau
+            const temp = currentSteps[draggedIndex];
+            currentSteps.splice(draggedIndex, 1);
+            currentSteps.splice(afterIndex > draggedIndex ? afterIndex - 1 : afterIndex, 0, temp);
+            draggedIndex = afterIndex > draggedIndex ? afterIndex - 1 : afterIndex;
+            touchStartY = touchY;
+            displaySettings();
+            initDragAndDrop();
+          }
+        }
+      }, { passive: true });
+      
+      settingsList.addEventListener('touchend', () => {
+        if (draggedElement) {
+          draggedElement.style.opacity = '';
+          draggedElement.style.transform = '';
+        }
+        draggedIndex = null;
+        draggedElement = null;
+      }, { passive: true });
     }
 
     function moveStep(index, direction) {
@@ -2130,8 +2281,8 @@
     }
 
     const manifest = {
-      name: "FilmLab Timing",
-      short_name: "FilmLab",
+      name: "NFL_timing",
+      short_name: "NFL_timing",
       description: "Professional timer for C-41 and B&W film development",
       start_url: ".",
       display: "standalone",
