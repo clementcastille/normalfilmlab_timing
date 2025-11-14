@@ -872,21 +872,37 @@
       flex-shrink: 0;
     }
 
-    .drag-handle {
-      font-size: 20px;
+    .arrow-btn {
+      cursor: pointer;
+      padding: 2px;
+      background: none;
+      border: none;
+      text-align: center;
       color: #999999;
-      cursor: grab;
-      user-select: none;
-      padding: 0 4px;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+      min-width: 24px;
       display: flex;
       align-items: center;
-      touch-action: none;
-      flex-shrink: 0;
+      justify-content: center;
     }
 
-    .drag-handle:active {
-      cursor: grabbing;
-      color: #666666;
+    .arrow-btn svg {
+      fill: #999999;
+      transition: fill 0.2s ease;
+    }
+
+    .arrow-btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.3;
+    }
+
+    .arrow-btn:not(:disabled):hover svg {
+      fill: #1A1A1A;
+    }
+
+    .arrow-btn:not(:disabled):active {
+      transform: scale(0.9);
     }
 
     @media (min-width: 768px) {
@@ -970,7 +986,7 @@
 
     .setting-item .controls-wrapper {
       display: flex;
-      gap: 4px;
+      gap: 8px;
       align-items: center;
       flex-shrink: 0;
       margin-left: auto;
@@ -2010,11 +2026,6 @@
         orderNum.className = 'order-number';
         orderNum.textContent = (index + 1);
         
-        const dragHandle = document.createElement('div');
-        dragHandle.className = 'drag-handle';
-        dragHandle.innerHTML = '≡';
-        dragHandle.setAttribute('data-index', index);
-        
         const nameInput = document.createElement('input');
         nameInput.type = 'text';
         nameInput.value = step.name;
@@ -2096,106 +2107,35 @@
         
         const deleteBtn = document.createElement('button');
         deleteBtn.className = 'icon-btn';
-        deleteBtn.textContent = '×';
+        deleteBtn.innerHTML = '×';
         deleteBtn.style.color = '#FF6B35';
         deleteBtn.style.fontSize = '26px';
         deleteBtn.onclick = () => deleteStep(index);
         
+        const upBtn = document.createElement('button');
+        upBtn.className = 'arrow-btn';
+        upBtn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/></svg>';
+        upBtn.onclick = () => moveStep(index, -1);
+        if (index === 0) upBtn.disabled = true;
+        
+        const downBtn = document.createElement('button');
+        downBtn.className = 'arrow-btn';
+        downBtn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>';
+        downBtn.onclick = () => moveStep(index, 1);
+        if (index === currentSteps.length - 1) downBtn.disabled = true;
+        
         const controlsWrapper = document.createElement('div');
         controlsWrapper.className = 'controls-wrapper';
         controlsWrapper.appendChild(deleteBtn);
+        controlsWrapper.appendChild(upBtn);
+        controlsWrapper.appendChild(downBtn);
         
-        settingItem.appendChild(dragHandle);
         settingItem.appendChild(orderNum);
         settingItem.appendChild(nameInput);
         settingItem.appendChild(timeGroup);
         settingItem.appendChild(controlsWrapper);
         
         settingsList.appendChild(settingItem);
-      });
-      
-      initDragAndDrop();
-    }
-
-    let draggedIndex = null;
-    let touchStartY = 0;
-    let draggedElement = null;
-    let currentTouchY = 0;
-
-    function initDragAndDrop() {
-      const settingsList = document.getElementById('settingsList');
-      
-      // Supprimer les anciens listeners
-      const oldList = settingsList.cloneNode(true);
-      settingsList.parentNode.replaceChild(oldList, settingsList);
-      
-      const newSettingsList = document.getElementById('settingsList');
-      
-      newSettingsList.addEventListener('touchstart', (e) => {
-        const handle = e.target.closest('.drag-handle');
-        if (!handle) return;
-        
-        draggedIndex = parseInt(handle.getAttribute('data-index'));
-        draggedElement = handle.closest('.setting-item');
-        touchStartY = e.touches[0].clientY;
-        currentTouchY = e.touches[0].clientY;
-        
-        draggedElement.style.opacity = '0.5';
-        draggedElement.style.transform = 'scale(1.05)';
-        draggedElement.style.transition = 'none';
-        draggedElement.style.zIndex = '1000';
-      });
-      
-      newSettingsList.addEventListener('touchmove', (e) => {
-        if (draggedIndex === null) return;
-        
-        e.preventDefault();
-        currentTouchY = e.touches[0].clientY;
-        const deltaY = currentTouchY - touchStartY;
-        
-        draggedElement.style.transform = `translateY(${deltaY}px) scale(1.05)`;
-        
-        // Déterminer si on doit échanger avec un autre élément
-        const items = Array.from(newSettingsList.querySelectorAll('.setting-item'));
-        let targetIndex = draggedIndex;
-        
-        items.forEach((item, idx) => {
-          if (idx === draggedIndex) return;
-          
-          const box = item.getBoundingClientRect();
-          const itemCenter = box.top + box.height / 2;
-          
-          if (currentTouchY > itemCenter && idx > draggedIndex && idx === draggedIndex + 1) {
-            targetIndex = idx;
-          } else if (currentTouchY < itemCenter && idx < draggedIndex && idx === draggedIndex - 1) {
-            targetIndex = idx;
-          }
-        });
-        
-        if (targetIndex !== draggedIndex) {
-          // Échanger les éléments
-          const temp = currentSteps[draggedIndex];
-          currentSteps[draggedIndex] = currentSteps[targetIndex];
-          currentSteps[targetIndex] = temp;
-          
-          const oldIndex = draggedIndex;
-          draggedIndex = targetIndex;
-          touchStartY = currentTouchY;
-          
-          displaySettings();
-          initDragAndDrop();
-        }
-      }, { passive: false });
-      
-      newSettingsList.addEventListener('touchend', () => {
-        if (draggedElement) {
-          draggedElement.style.opacity = '';
-          draggedElement.style.transform = '';
-          draggedElement.style.transition = '';
-          draggedElement.style.zIndex = '';
-        }
-        draggedIndex = null;
-        draggedElement = null;
       });
     }
 
