@@ -324,7 +324,7 @@
       height: 100dvh;
       display: flex;
       flex-direction: column;
-      padding: max(70px, calc(env(safe-area-inset-top) + 50px)) 30px max(80px, env(safe-area-inset-bottom));
+      padding: max(48px, calc(env(safe-area-inset-top) + 28px)) 30px max(80px, env(safe-area-inset-bottom));
       align-items: center;
       overflow: hidden;
     }
@@ -333,11 +333,12 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      margin-bottom: 10px;
+      margin-bottom: 2px;
       max-width: 600px;
       width: 100%;
       position: relative;
-      height: 44px;
+      height: 20px;
+      background: #CCCCCC;
     }
 
     .settings-icon {
@@ -451,7 +452,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 15px;
+      gap: 12px;
       width: 100%;
       max-width: 600px;
       flex: 1;
@@ -460,7 +461,7 @@
     }
 
     .steps-title {
-      font-size: 20px;
+      font-size: 16px;
       font-weight: 700;
       color: #1A1A1A;
       text-transform: lowercase;
@@ -471,15 +472,15 @@
     .steps-matrix {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: 4px;
       justify-content: center;
-      max-width: 160px;
+      max-width: 120px;
       flex-shrink: 0;
     }
 
     .step-dot {
-      width: 20px;
-      height: 20px;
+      width: 16px;
+      height: 16px;
       border-radius: 50%;
       background: #E0E0E0;
       transition: all 0.3s ease;
@@ -512,7 +513,7 @@
     .steps-details {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 4px;
       width: 100%;
       max-width: 500px;
       flex: 1;
@@ -531,7 +532,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 10px 20px;
+      padding: 14px 20px;
       background: #F5F5F5;
       border-radius: 10px;
       font-size: 15px;
@@ -556,8 +557,8 @@
     }
 
     .steps-bottom {
-      padding-top: 15px;
-      padding-bottom: 20px;
+      padding-top: 10px;
+      padding-bottom: 15px;
       width: 100%;
       max-width: 600px;
       display: flex;
@@ -1746,6 +1747,19 @@
       btn.classList.remove('resume', 'primary');
       btn.classList.add('pause');
       
+      // Si l'étape est déjà à 0, déclencher immédiatement l'alarme
+      if (remainingSeconds <= 0) {
+        isRunning = false;
+        releaseWakeLock();
+        playStepCompleteSound();
+        
+        btn.textContent = 'DONE';
+        btn.classList.remove('pause', 'resume', 'primary');
+        btn.classList.add('disabled');
+        btn.disabled = true;
+        return;
+      }
+      
       timerInterval = setInterval(() => {
         remainingSeconds--;
         updateCountdownDisplay();
@@ -1971,6 +1985,8 @@
         minInput.type = 'number';
         minInput.min = '0';
         minInput.value = Math.floor(step.duration / 60);
+        minInput.inputMode = 'numeric';
+        minInput.pattern = '[0-9]*';
         minInput.oninput = (e) => {
           const mins = parseInt(e.target.value) || 0;
           const secs = currentSteps[index].duration % 60;
@@ -1986,6 +2002,8 @@
         secInput.min = '0';
         secInput.max = '59';
         secInput.value = step.duration % 60;
+        secInput.inputMode = 'numeric';
+        secInput.pattern = '[0-9]*';
         secInput.oninput = (e) => {
           const mins = Math.floor(currentSteps[index].duration / 60);
           const secs = parseInt(e.target.value) || 0;
