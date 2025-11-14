@@ -8,13 +8,6 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="NFL_timing">
-  <link rel="apple-touch-icon" sizes="180x180" href="logoapp.png">
-  <link rel="apple-touch-icon" sizes="167x167" href="logoapp.png">
-  <link rel="apple-touch-icon" sizes="152x152" href="logoapp.png">
-  <link rel="apple-touch-icon" sizes="120x120" href="logoapp.png">
-  <link rel="icon" type="image/png" sizes="192x192" href="logoapp.png">
-  <link rel="icon" type="image/png" sizes="512x512" href="logoapp.png">
-  <link rel="apple-touch-startup-image" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 828 1792'%3E%3Crect width='828' height='1792' fill='%23FFFFFF'/%3E%3Ctext x='414' y='896' font-size='120' fill='%23008000' text-anchor='middle' font-family='system-ui' font-weight='800'%3EFilmLab%3C/text%3E%3C/svg%3E" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2)">
   <meta name="description" content="Professional timer for C-41 and B&W film development">
   
   <style>
@@ -329,6 +322,22 @@
       overflow: hidden;
     }
 
+    /* NOUVEAU : Conteneur centré pour iPad et écrans larges */
+    @media (min-width: 768px) {
+      .steps-screen {
+        justify-content: center;
+      }
+      
+      .steps-screen-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        max-width: 600px;
+        width: 100%;
+        gap: 20px;
+      }
+    }
+
     .steps-header {
       display: flex;
       justify-content: center;
@@ -419,32 +428,6 @@
       font-weight: 600;
       color: #999999;
       text-transform: lowercase;
-    }
-
-    .settings-icon {
-      cursor: pointer;
-      padding: 0;
-      background: none;
-      border: none;
-      transition: transform 0.2s;
-      line-height: 1;
-      margin-left: auto;
-      width: 44px;
-      height: 44px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .settings-icon:active {
-      transform: scale(0.9);
-    }
-    
-    .settings-icon svg {
-      width: 28px;
-      height: 28px;
-      fill: #1A1A1A;
-      transition: fill 0.2s;
     }
 
     .steps-content {
@@ -1391,18 +1374,18 @@
         <div class="time-input-row">
           <label>developer</label>
           <div class="time-fields">
-            <input type="number" id="revMin" min="0" max="99" value="00" inputmode="numeric" pattern="[0-9]*">
+            <input type="number" id="revMin" min="0" max="99" value="03" inputmode="numeric" pattern="[0-9]*">
             <span class="time-separator">:</span>
-            <input type="number" id="revSec" min="0" max="59" value="00" inputmode="numeric" pattern="[0-9]*">
+            <input type="number" id="revSec" min="0" max="59" value="15" inputmode="numeric" pattern="[0-9]*">
           </div>
         </div>
         
         <div class="time-input-row">
           <label>bleach</label>
           <div class="time-fields">
-            <input type="number" id="bleachMin" min="0" max="99" value="00" inputmode="numeric" pattern="[0-9]*">
+            <input type="number" id="bleachMin" min="0" max="99" value="06" inputmode="numeric" pattern="[0-9]*">
             <span class="time-separator">:</span>
-            <input type="number" id="bleachSec" min="0" max="59" value="00" inputmode="numeric" pattern="[0-9]*">
+            <input type="number" id="bleachSec" min="0" max="59" value="30" inputmode="numeric" pattern="[0-9]*">
           </div>
         </div>
       </div>
@@ -1514,10 +1497,7 @@
     </div>
   </div>
 
-  <audio id="stepCompleteSound" preload="auto">
-    <source src="notification.mp3" type="audio/mpeg">
-    <source src="notification.ogg" type="audio/ogg">
-  </audio>
+  <audio id="stepCompleteSound" preload="auto"></audio>
 
   <div id="settingsScreen" class="settings-screen hidden">
     <div class="settings-header">
@@ -1807,7 +1787,6 @@
       btn.classList.remove('resume', 'primary');
       btn.classList.add('pause');
       
-      // Si l'étape est déjà à 0, déclencher immédiatement l'alarme
       if (remainingSeconds <= 0) {
         isRunning = false;
         releaseWakeLock();
@@ -2031,7 +2010,6 @@
         orderNum.className = 'order-number';
         orderNum.textContent = (index + 1);
         
-        // Poignée de drag
         const dragHandle = document.createElement('div');
         dragHandle.className = 'drag-handle';
         dragHandle.innerHTML = '≡';
@@ -2047,14 +2025,12 @@
         const timeGroup = document.createElement('div');
         timeGroup.className = 'time-group';
         
-        // Afficher le temps au format _ MM:SS
         const timeDisplay = document.createElement('div');
         timeDisplay.className = 'time-display';
         const minutes = Math.floor(step.duration / 60);
         const seconds = step.duration % 60;
         timeDisplay.textContent = `_ ${minutes}:${seconds.toString().padStart(2, '0')}`;
         
-        // Inputs cachés pour la modification (on les affichera au clic)
         const timeEditContainer = document.createElement('div');
         timeEditContainer.className = 'time-edit-container hidden';
         
@@ -2097,7 +2073,6 @@
           timeDisplay.textContent = `_ ${mins}:${secs.toString().padStart(2, '0')}`;
         }
         
-        // Toggle entre affichage et édition au clic
         timeDisplay.onclick = () => {
           timeDisplay.classList.add('hidden');
           timeEditContainer.classList.remove('hidden');
@@ -2119,7 +2094,6 @@
         timeGroup.appendChild(timeDisplay);
         timeGroup.appendChild(timeEditContainer);
         
-        // Bouton supprimer uniquement
         const deleteBtn = document.createElement('button');
         deleteBtn.className = 'icon-btn';
         deleteBtn.textContent = '×';
@@ -2140,71 +2114,89 @@
         settingsList.appendChild(settingItem);
       });
       
-      // Initialiser le drag & drop
       initDragAndDrop();
     }
 
-    // Variables pour le drag & drop
     let draggedIndex = null;
     let touchStartY = 0;
     let draggedElement = null;
+    let currentTouchY = 0;
 
-    // Initialiser le drag & drop après l'affichage
     function initDragAndDrop() {
       const settingsList = document.getElementById('settingsList');
       
-      settingsList.addEventListener('touchstart', (e) => {
+      // Supprimer les anciens listeners
+      const oldList = settingsList.cloneNode(true);
+      settingsList.parentNode.replaceChild(oldList, settingsList);
+      
+      const newSettingsList = document.getElementById('settingsList');
+      
+      newSettingsList.addEventListener('touchstart', (e) => {
         const handle = e.target.closest('.drag-handle');
         if (!handle) return;
         
         draggedIndex = parseInt(handle.getAttribute('data-index'));
         draggedElement = handle.closest('.setting-item');
         touchStartY = e.touches[0].clientY;
+        currentTouchY = e.touches[0].clientY;
         
         draggedElement.style.opacity = '0.5';
         draggedElement.style.transform = 'scale(1.05)';
-      }, { passive: true });
+        draggedElement.style.transition = 'none';
+        draggedElement.style.zIndex = '1000';
+      });
       
-      settingsList.addEventListener('touchmove', (e) => {
+      newSettingsList.addEventListener('touchmove', (e) => {
         if (draggedIndex === null) return;
         
-        const touchY = e.touches[0].clientY;
-        const deltaY = touchY - touchStartY;
+        e.preventDefault();
+        currentTouchY = e.touches[0].clientY;
+        const deltaY = currentTouchY - touchStartY;
         
         draggedElement.style.transform = `translateY(${deltaY}px) scale(1.05)`;
         
-        // Déterminer sur quel élément on survole
-        const items = Array.from(settingsList.querySelectorAll('.setting-item'));
-        const afterElement = items.find((item, idx) => {
-          if (idx === draggedIndex) return false;
+        // Déterminer si on doit échanger avec un autre élément
+        const items = Array.from(newSettingsList.querySelectorAll('.setting-item'));
+        let targetIndex = draggedIndex;
+        
+        items.forEach((item, idx) => {
+          if (idx === draggedIndex) return;
+          
           const box = item.getBoundingClientRect();
-          return touchY < box.top + box.height / 2;
+          const itemCenter = box.top + box.height / 2;
+          
+          if (currentTouchY > itemCenter && idx > draggedIndex && idx === draggedIndex + 1) {
+            targetIndex = idx;
+          } else if (currentTouchY < itemCenter && idx < draggedIndex && idx === draggedIndex - 1) {
+            targetIndex = idx;
+          }
         });
         
-        const currentItem = items[draggedIndex];
-        if (afterElement) {
-          const afterIndex = items.indexOf(afterElement);
-          if (afterIndex !== draggedIndex) {
-            // Échanger les éléments dans le tableau
-            const temp = currentSteps[draggedIndex];
-            currentSteps.splice(draggedIndex, 1);
-            currentSteps.splice(afterIndex > draggedIndex ? afterIndex - 1 : afterIndex, 0, temp);
-            draggedIndex = afterIndex > draggedIndex ? afterIndex - 1 : afterIndex;
-            touchStartY = touchY;
-            displaySettings();
-            initDragAndDrop();
-          }
+        if (targetIndex !== draggedIndex) {
+          // Échanger les éléments
+          const temp = currentSteps[draggedIndex];
+          currentSteps[draggedIndex] = currentSteps[targetIndex];
+          currentSteps[targetIndex] = temp;
+          
+          const oldIndex = draggedIndex;
+          draggedIndex = targetIndex;
+          touchStartY = currentTouchY;
+          
+          displaySettings();
+          initDragAndDrop();
         }
-      }, { passive: true });
+      }, { passive: false });
       
-      settingsList.addEventListener('touchend', () => {
+      newSettingsList.addEventListener('touchend', () => {
         if (draggedElement) {
           draggedElement.style.opacity = '';
           draggedElement.style.transform = '';
+          draggedElement.style.transition = '';
+          draggedElement.style.zIndex = '';
         }
         draggedIndex = null;
         draggedElement = null;
-      }, { passive: true });
+      });
     }
 
     function moveStep(index, direction) {
@@ -2239,7 +2231,6 @@
     }
 
     window.addEventListener('DOMContentLoaded', () => {
-      // Force la mise à jour des étapes en anglais
       localStorage.removeItem('c41_steps');
       localStorage.removeItem('nb_steps');
       
@@ -2258,64 +2249,6 @@
         e.target.select();
       }
     }, true);
-
-    if ('serviceWorker' in navigator) {
-      const swCode = `
-        const CACHE_NAME = 'filmlab-v3';
-        
-        self.addEventListener('install', (e) => {
-          self.skipWaiting();
-        });
-        
-        self.addEventListener('activate', (e) => {
-          e.waitUntil(self.clients.claim());
-        });
-        
-        self.addEventListener('fetch', (e) => {
-          e.respondWith(
-            caches.match(e.request).then((r) => r || fetch(e.request))
-          );
-        });
-      `;
-      
-      const blob = new Blob([swCode], { type: 'application/javascript' });
-      const swUrl = URL.createObjectURL(blob);
-      
-      navigator.serviceWorker.register(swUrl).catch(() => {});
-    }
-
-    const manifest = {
-      name: "FilmLab Timing",
-      short_name: "FilmLab",
-      description: "Professional timer for C-41 and B&W film development",
-      start_url: ".",
-      display: "standalone",
-      orientation: "portrait",
-      background_color: "#FFFFFF",
-      theme_color: "#FFFFFF",
-      icons: [
-        {
-          src: "logoapp.png",
-          sizes: "192x192",
-          type: "image/png",
-          purpose: "any maskable"
-        },
-        {
-          src: "logoapp.png",
-          sizes: "512x512",
-          type: "image/png",
-          purpose: "any maskable"
-        }
-      ]
-    };
-    
-    const manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
-    const manifestURL = URL.createObjectURL(manifestBlob);
-    
-    const link = document.createElement('link');
-    link.rel = 'manifest';
-    link.href = manifestURL;
-    document.head.appendChild(link);
   </script>
 </body>
 </html>
