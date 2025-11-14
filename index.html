@@ -1,61 +1,35 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <!-- Encodage UTF-8 pour supporter les caractères spéciaux français -->
   <meta charset="UTF-8">
-  
-  <!-- Configuration du viewport pour mobile : largeur adaptative, zoom initial 1, pas de zoom utilisateur, couverture complète -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  
-  <!-- Couleur de la barre de statut/navigation du navigateur mobile -->
   <meta name="theme-color" content="#FFFFFF">
-  
-  <!-- Titre affiché dans l'onglet du navigateur -->
   <title>nfl_timing</title>
-  
-  <!-- Configuration pour transformer l'app en PWA sur iOS : mode standalone (plein écran) -->
   <meta name="apple-mobile-web-app-capable" content="yes">
-  
-  <!-- Style de la barre de statut iOS : black-translucent pour iPhone 11 -->
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  
-  <!-- Nom affiché sous l'icône de l'app sur l'écran d'accueil iOS -->
   <meta name="apple-mobile-web-app-title" content="NFL_timing">
-  
-  <!-- Icônes pour iOS - multiples tailles pour tous les appareils -->
   <link rel="apple-touch-icon" sizes="180x180" href="logoapp.png">
   <link rel="apple-touch-icon" sizes="167x167" href="logoapp.png">
   <link rel="apple-touch-icon" sizes="152x152" href="logoapp.png">
   <link rel="apple-touch-icon" sizes="120x120" href="logoapp.png">
-  
-  <!-- Icône générique pour Android et autres -->
   <link rel="icon" type="image/png" sizes="192x192" href="logoapp.png">
   <link rel="icon" type="image/png" sizes="512x512" href="logoapp.png">
-  
-  <!-- Splash screen pour iPhone 11 (828x1792) -->
   <link rel="apple-touch-startup-image" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 828 1792'%3E%3Crect width='828' height='1792' fill='%23FFFFFF'/%3E%3Ctext x='414' y='896' font-size='120' fill='%23008000' text-anchor='middle' font-family='system-ui' font-weight='800'%3EFilmLab%3C/text%3E%3C/svg%3E" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2)">
-  
-  <!-- Description pour le manifest -->
   <meta name="description" content="Timer professionnel pour développement photo argentique C-41 et N&B">
   
   <style>
-    /* ============================================
-       BOUTONS RETOUR COMMUNS
-       ============================================ */
-    
-    /* Police commune pour tous les chiffres de chrono */
     .chrono-font {
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
       font-weight: 800;
-      font-variant-numeric: tabular-nums; /* Chiffres de largeur fixe */
+      font-variant-numeric: tabular-nums;
       letter-spacing: -4px;
     }
     
-    /* Style commun pour tous les boutons retour */
     .back-btn {
-      position: absolute;
+      position: fixed;
       left: 20px;
-      top: 20px;
+      top: env(safe-area-inset-top, 20px);
+      top: max(20px, env(safe-area-inset-top));
       width: 44px;
       height: 44px;
       padding: 0;
@@ -66,6 +40,7 @@
       align-items: center;
       justify-content: center;
       transition: transform 0.2s;
+      z-index: 100;
     }
     
     .back-btn:active {
@@ -78,180 +53,144 @@
       fill: #1A1A1A;
     }
 
-    /* ============================================
-       RESET ET CONFIGURATION GLOBALE
-       ============================================ */
-    
-    /* Sélecteur universel : applique box-sizing, retire marges/padding, désactive surbrillance tactile */
     * {
-      box-sizing: border-box; /* Inclut padding et border dans la taille totale */
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
-      -webkit-tap-highlight-color: transparent; /* Désactive la surbrillance bleue au tap sur mobile */
+      -webkit-tap-highlight-color: transparent;
     }
 
-    /* Configuration du body et html pour occuper toute la hauteur */
     html, body {
-      height: 100%; /* 100% de la hauteur de la fenêtre */
-      background: #FFFFFF; /* Fond blanc */
-      color: #1A1A1A; /* Texte noir foncé */
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif; /* Police système native */
-      -webkit-font-smoothing: antialiased; /* Lissage des polices sur WebKit */
-      overflow-x: hidden; /* Empêche le scroll horizontal */
-      position: fixed; /* Fixe la position pour éviter le défilement global */
-      width: 100%; /* Largeur complète */
-      overscroll-behavior: none; /* Désactive l'effet de rebond lors du scroll */
+      height: 100%;
+      background: #FFFFFF;
+      color: #1A1A1A;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow: hidden;
+      position: fixed;
+      width: 100%;
+      overscroll-behavior: none;
+      touch-action: pan-y;
     }
 
-    /* ============================================
-       PAGE D'ACCUEIL
-       ============================================ */
-    
-    /* Container principal de l'écran d'accueil */
     .welcome-screen {
-      height: 100vh; /* 100% de la hauteur du viewport */
-      height: 100dvh; /* Hauteur dynamique du viewport (exclut les barres de navigation mobile) */
-      display: flex; /* Active le flexbox */
-      flex-direction: column; /* Empile les éléments verticalement */
-      justify-content: center; /* Centre verticalement */
-      align-items: center; /* Centre horizontalement */
-      /* Padding avec safe-area-inset pour respecter les encoches/bordures des smartphones */
+      height: 100vh;
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
       padding: max(60px, env(safe-area-inset-top)) 30px max(40px, env(safe-area-inset-bottom));
-      position: relative; /* Pour positionner le logo en absolu par rapport à ce container */
+      position: relative;
     }
 
-    /* Container du contenu central de l'accueil */
     .welcome-content {
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      gap: 60px; /* Espacement entre les éléments enfants */
+      gap: 60px;
       width: 100%;
     }
 
-    /* Container du logo en bas de page */
     .welcome-logo {
-      position: absolute; /* Positionnement absolu par rapport au parent */
-      bottom: 30px; /* 30px du bas */
-      left: 50%; /* Centré horizontalement */
-      transform: translateX(-50%); /* Correction pour centrage parfait */
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
     }
 
-    /* Image du logo */
     .welcome-logo img {
-      height: 20px; /* Hauteur fixe */
-      width: auto; /* Largeur proportionnelle */
+      height: 20px;
+      width: auto;
     }
 
-    /* Container des choix de processus (C-41 / N&B) */
     .process-choice {
       display: flex;
       flex-direction: column;
-      gap: 60px; /* Espacement entre les options */
+      gap: 60px;
       align-items: center;
     }
 
-    /* Container d'une option de processus */
     .process-option {
       display: flex;
       flex-direction: column;
       align-items: center;
     }
 
-    /* Bouton de sélection du processus (C-41 ou N&B) */
     .process-btn {
-      font-size: 100px; /* Très grande taille pour impact visuel */
-      font-weight: 800; /* Ultra-gras */
-      background: transparent; /* Fond transparent */
-      border: none; /* Pas de bordure */
-      cursor: pointer; /* Curseur en forme de main */
-      transition: all 0.3s ease; /* Animation fluide sur tous les changements */
-      text-transform: uppercase; /* Force les majuscules */
-      color: #1A1A1A; /* Couleur du texte */
-      line-height: 1; /* Hauteur de ligne serrée */
-      letter-spacing: 8px; /* Espacement entre les lettres */
-      padding: 0; /* Pas de padding interne */
+      font-size: 100px;
+      font-weight: 800;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      color: #1A1A1A;
+      line-height: 1;
+      letter-spacing: 8px;
+      padding: 0;
     }
 
-    /* Effet au tap/click sur le bouton */
     .process-btn:active {
-      transform: scale(0.95); /* Réduit légèrement la taille */
-      color: #666666; /* Grise le texte */
+      transform: scale(0.95);
+      color: #666666;
     }
 
-    /* Media query pour écrans moyens et grands (tablettes, desktop) */
     @media (min-width: 768px) {
       .process-btn {
-        font-size: 120px; /* Encore plus grand sur grand écran */
+        font-size: 120px;
       }
     }
 
-    /* Media query pour petits écrans en hauteur (petits smartphones) */
     @media (max-height: 700px) {
       .process-btn {
-        font-size: 80px; /* Réduit la taille pour éviter le débordement */
+        font-size: 80px;
       }
     }
 
-    /* ============================================
-       ÉCRAN DE CONFIGURATION C-41 ET N&B
-       ============================================ */
-    
-    /* Container principal de l'écran de configuration */
     .config-screen {
       height: 100vh;
       height: 100dvh;
       display: flex;
       flex-direction: column;
-      /* Padding adaptatif avec safe-area pour les encoches */
-      padding: max(60px, env(safe-area-inset-top)) 30px max(25px, env(safe-area-inset-bottom));
+      padding: max(80px, calc(env(safe-area-inset-top) + 60px)) 30px max(25px, env(safe-area-inset-bottom));
       align-items: center;
-      position: relative; /* Pour le bouton retour en position absolue */
-      overflow: hidden; /* Empêche tout scroll */
+      position: relative;
+      overflow: hidden;
     }
 
-    /* Augmente le padding sur grand écran */
     @media (min-width: 768px) {
       .config-screen {
         padding: max(60px, env(safe-area-inset-top)) 30px max(40px, env(safe-area-inset-bottom));
       }
     }
 
-    /* Bouton de retour config (hérite du style .back-btn) */
-    .config-back-btn {
-      /* Tous les styles sont hérités de .back-btn */
-    }
-
-    /* Titre de la page de configuration */
     .config-title {
       font-size: 24px;
-      font-weight: 600; /* Semi-gras */
-      text-transform: lowercase; /* Force les minuscules */
+      font-weight: 600;
+      text-transform: lowercase;
       color: #000000;
       text-align: center;
       margin-bottom: 10px;
     }
 
-    /* Container des champs de saisie de temps */
     .time-inputs {
-      flex: 1; /* Prend tout l'espace disponible */
+      flex: 1;
       display: flex;
       flex-direction: column;
-      justify-content: center; /* Centre verticalement le contenu */
+      justify-content: center;
       align-items: center;
-      gap: 20px; /* Espacement entre les éléments */
+      gap: 20px;
       width: 100%;
     }
 
-    /* Augmente l'espacement sur grand écran */
     @media (min-width: 768px) {
       .time-inputs {
         gap: 40px;
       }
     }
 
-    /* Container groupant les deux champs de saisie (révélateur + bleach/fixateur) */
     .time-inputs-container {
       display: flex;
       flex-direction: column;
@@ -265,7 +204,6 @@
       }
     }
 
-    /* Une ligne de saisie de temps (label + inputs) */
     .time-input-row {
       display: flex;
       flex-direction: column;
@@ -279,64 +217,57 @@
       }
     }
 
-    /* Label au-dessus du champ (révélateur, bleach, fixateur) */
     .time-input-row label {
       font-size: 16px;
       font-weight: 600;
       text-transform: lowercase;
-      color: #666666; /* Gris moyen */
+      color: #666666;
       text-align: center;
     }
 
-    /* Container des champs minutes:secondes */
     .time-fields {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 4px; /* Espacement réduit entre les éléments */
+      gap: 4px;
     }
 
-    /* Champs input pour minutes et secondes */
     .time-fields input {
-      font-size: 90px; /* Très grande taille pour faciliter la saisie */
+      font-size: 90px;
       font-weight: 800;
       border: none;
       background: transparent;
       color: #1A1A1A;
-      width: auto; /* Largeur automatique selon le contenu */
-      min-width: 0; /* Permet de rétrécir si nécessaire */
+      width: auto;
+      min-width: 0;
       padding: 0;
       line-height: 1;
-      letter-spacing: -4px; /* Rapproche les chiffres */
+      letter-spacing: -4px;
       text-align: center;
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
-      font-variant-numeric: tabular-nums; /* Chiffres de largeur fixe */
+      font-variant-numeric: tabular-nums;
     }
 
     @media (min-width: 768px) {
       .time-fields input {
-        font-size: 120px; /* Encore plus grand sur desktop */
+        font-size: 120px;
       }
     }
 
-    /* Masque les boutons +/- des inputs type number sur WebKit (Chrome, Safari) */
     .time-fields input::-webkit-outer-spin-button,
     .time-fields input::-webkit-inner-spin-button {
       -webkit-appearance: none;
       margin: 0;
     }
 
-    /* Masque les boutons +/- sur Firefox */
     .time-fields input[type=number] {
       -moz-appearance: textfield;
     }
 
-    /* Style du focus (quand on clique dans le champ) */
     .time-fields input:focus {
-      outline: none; /* Retire le contour par défaut */
+      outline: none;
     }
 
-    /* Séparateur ":" entre minutes et secondes */
     .time-separator {
       font-size: 60px;
       font-weight: 800;
@@ -353,86 +284,99 @@
       }
     }
 
-    /* Bouton de validation de la configuration */
     .validate-btn {
       padding: 20px 60px;
       font-size: 18px;
       font-weight: 700;
-      background: #FFA500; /* Fond orange */
-      color: #000000; /* Texte noir */
+      background: #FFA500;
+      color: #000000;
       border: none;
-      border-radius: 100px; /* Coins arrondis */
+      border-radius: 100px;
       cursor: pointer;
-      transition: all 0.3s ease; /* Animation fluide */
+      transition: all 0.3s ease;
       text-transform: lowercase;
       width: auto;
     }
 
-    /* Effet au clic */
     .validate-btn:active {
-      transform: scale(0.98); /* Légère réduction */
+      transform: scale(0.98);
     }
 
-    /* Ajustements pour très petits écrans en hauteur */
     @media (max-height: 700px) {
       .time-fields input {
-        font-size: 100px; /* Réduit la taille */
+        font-size: 100px;
       }
       .time-separator {
         font-size: 70px;
       }
     }
 
-    /* ============================================
-       LISTE DES ÉTAPES
-       ============================================ */
-    
-    /* Container de l'écran listant toutes les étapes */
     .steps-screen {
       height: 100vh;
       height: 100dvh;
       display: flex;
       flex-direction: column;
-      padding: max(10px, env(safe-area-inset-top)) 30px max(40px, env(safe-area-inset-bottom));
+      padding: max(80px, calc(env(safe-area-inset-top) + 60px)) 30px max(40px, env(safe-area-inset-bottom));
       align-items: center;
-      overflow: hidden; /* Empêche le scroll de l'écran entier */
+      overflow: hidden;
     }
 
-    /* Header avec bouton retour et bouton réglages */
     .steps-header {
       display: flex;
-      justify-content: space-between; /* Espace entre les éléments */
+      justify-content: center;
       align-items: center;
       margin-bottom: 10px;
-      max-width: 600px; /* Largeur max pour ne pas être trop large sur desktop */
+      max-width: 600px;
       width: 100%;
       position: relative;
+      height: 44px;
     }
 
-    /* Bouton retour vers la config (hérite du style .back-btn) */
-    .back-to-config {
-      /* Tous les styles sont hérités de .back-btn */
+    .settings-icon {
+      cursor: pointer;
+      padding: 0;
+      background: none;
+      border: none;
+      transition: transform 0.2s;
+      line-height: 1;
+      position: fixed;
+      right: 20px;
+      top: max(20px, env(safe-area-inset-top));
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
     }
 
-    /* Container de la progression et du temps total */
+    .settings-icon:active {
+      transform: scale(0.9);
+    }
+    
+    .settings-icon svg {
+      width: 28px;
+      height: 28px;
+      fill: #1A1A1A;
+      transition: fill 0.2s;
+    }
+
     .steps-progress-container {
       display: flex;
-      justify-content: space-between; /* Progression à gauche, temps total à droite */
+      justify-content: space-between;
       align-items: baseline;
       width: 100%;
       max-width: 500px;
       margin-top: 5px;
-      flex-shrink: 0; /* Ne se réduit jamais - reste fixe */
+      flex-shrink: 0;
     }
 
-    /* Container du pourcentage de progression */
     .progress-percentage-container {
       display: flex;
       align-items: baseline;
       gap: 8px;
     }
 
-    /* Affichage du pourcentage (ex: 45%) */
     .progress-percentage {
       font-size: 20px;
       font-weight: 700;
@@ -440,32 +384,28 @@
       line-height: 1;
     }
 
-    /* Label "%" ou indication */
     .progress-label {
       font-size: 12px;
       font-weight: 600;
-      color: #999999; /* Gris clair */
+      color: #999999;
       text-transform: lowercase;
     }
 
-    /* Container du temps total */
     .total-time-container {
       display: flex;
       align-items: baseline;
       gap: 8px;
     }
 
-    /* Affichage du temps total (ex: 15:30) */
     .total-time {
       font-size: 20px;
       font-weight: 700;
       color: #1A1A1A;
       line-height: 1;
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
-      font-variant-numeric: tabular-nums; /* Chiffres de largeur fixe */
+      font-variant-numeric: tabular-nums;
     }
 
-    /* Label "total" */
     .total-label {
       font-size: 12px;
       font-weight: 600;
@@ -473,17 +413,16 @@
       text-transform: lowercase;
     }
 
-    /* Icône de réglages (roue dentée) */
     .settings-icon {
       cursor: pointer;
-      padding: 10px;
+      padding: 0;
       background: none;
       border: none;
       transition: transform 0.2s;
       line-height: 1;
-      margin-left: auto; /* Pousse l'icône à droite */
-      width: 40px;
-      height: 40px;
+      margin-left: auto;
+      width: 44px;
+      height: 44px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -493,15 +432,13 @@
       transform: scale(0.9);
     }
     
-    /* SVG de l'icône réglages */
     .settings-icon svg {
-      width: 32px;
-      height: 32px;
+      width: 28px;
+      height: 28px;
       fill: #1A1A1A;
       transition: fill 0.2s;
     }
 
-    /* Container du contenu principal des étapes */
     .steps-content {
       display: flex;
       flex-direction: column;
@@ -509,112 +446,107 @@
       gap: 20px;
       width: 100%;
       max-width: 600px;
-      flex: 1; /* Prend l'espace disponible */
-      overflow: hidden; /* Pas de scroll sur ce container */
-      min-height: 0; /* Important pour que le scroll fonctionne dans flexbox */
+      flex: 1;
+      overflow: hidden;
+      min-height: 0;
     }
 
-    /* Titre "étapes" */
     .steps-title {
       font-size: 28px;
       font-weight: 700;
       color: #1A1A1A;
       text-transform: lowercase;
       text-align: center;
-      flex-shrink: 0; /* Ne se réduit jamais - reste fixe */
+      flex-shrink: 0;
     }
 
-    /* Grille des points représentant les étapes */
     .steps-matrix {
-      display: grid;
-      grid-template-columns: repeat(5, 32px);
-      gap: 12px; /* Espacement entre les points */
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
       justify-content: center;
-      max-width: 100%;
-      flex-shrink: 0; /* Ne se réduit jamais - reste fixe */
+      max-width: 220px;
+      flex-shrink: 0;
     }
 
-    /* Un point représentant une étape */
     .step-dot {
       width: 32px;
       height: 32px;
-      border-radius: 50%; /* Forme circulaire */
-      background: #E0E0E0; /* Gris clair par défaut */
-      transition: all 0.3s ease; /* Animation du changement de couleur */
+      border-radius: 50%;
+      background: #E0E0E0;
+      transition: all 0.3s ease;
       cursor: pointer;
       position: relative;
-      flex-shrink: 0; /* Ne rétrécit pas */
+      flex-shrink: 0;
     }
 
-    /* Point d'étape complétée */
     .step-dot.completed {
-      background: #FFA500; /* 0range */
+      background: #FFA500;
     }
 
-    /* Tooltip au survol du point (affiche le nom de l'étape) */
     .step-dot:hover::after {
-      content: attr(data-name); /* Utilise l'attribut data-name comme contenu */
+      content: attr(data-name);
       position: absolute;
-      bottom: -35px; /* En dessous du point */
+      bottom: -35px;
       left: 50%;
-      transform: translateX(-50%); /* Centre horizontalement */
-      background: #1A1A1A; /* Fond noir */
-      color: #FFFFFF; /* Texte blanc */
+      transform: translateX(-50%);
+      background: #1A1A1A;
+      color: #FFFFFF;
       padding: 6px 12px;
       border-radius: 6px;
       font-size: 12px;
-      white-space: nowrap; /* Pas de retour à la ligne */
+      white-space: nowrap;
       font-weight: 600;
-      z-index: 10; /* Au-dessus des autres éléments */
-      pointer-events: none; /* N'interfère pas avec les clics */
+      z-index: 10;
+      pointer-events: none;
     }
 
-    /* Liste détaillée des étapes */
     .steps-details {
       display: flex;
       flex-direction: column;
       gap: 8px;
       width: 100%;
       max-width: 500px;
-      flex: 1; /* Prend l'espace disponible */
-      overflow-y: auto; /* Scroll uniquement cette liste */
-      -webkit-overflow-scrolling: touch; /* Scroll fluide sur iOS */
-      min-height: 0; /* Important pour le scroll dans flexbox */
+      flex: 1;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      min-height: 0;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
     }
 
-    /* Une ligne de détail d'étape (nom + durée) */
+    .steps-details::-webkit-scrollbar {
+      display: none;
+    }
+
     .step-detail-item {
       display: flex;
-      justify-content: space-between; /* Nom à gauche, durée à droite */
+      justify-content: space-between;
       align-items: center;
       padding: 12px 20px;
-      background: #F5F5F5; /* Gris très clair */
+      background: #F5F5F5;
       border-radius: 10px;
       font-size: 14px;
       transition: all 0.2s ease;
     }
 
-    /* Étape complétée (fond vert clair) */
     .step-detail-item.completed {
       background: #FFA500;
     }
 
-    /* Nom de l'étape dans la liste */
     .step-detail-name {
       font-weight: 600;
       text-transform: uppercase;
       color: #1A1A1A;
     }
 
-    /* Durée de l'étape dans la liste */
     .step-detail-time {
       font-weight: 700;
       color: #666666;
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
-      font-variant-numeric: tabular-nums; /* Chiffres de largeur fixe */
+      font-variant-numeric: tabular-nums;
     }
 
-    /* Container du bas avec le bouton démarrer */
     .steps-bottom {
       padding-top: 15px;
       padding-bottom: 20px;
@@ -622,10 +554,9 @@
       max-width: 600px;
       display: flex;
       justify-content: center;
-      flex-shrink: 0; /* Ne se réduit jamais */
+      flex-shrink: 0;
     }
 
-    /* Bouton "démarrer" le processus */
     .start-btn {
       width: auto;
       padding: 20px 60px;
@@ -638,69 +569,55 @@
       cursor: pointer;
       transition: all 0.3s ease;
       text-transform: lowercase;
-      box-shadow: 0 3px 0 0 #FFFFFF; /* Ombre blanche (effet subtil) */
+      box-shadow: 0 3px 0 0 #FFFFFF;
     }
 
     .start-btn:active {
       transform: scale(0.98);
     }
 
-    /* ============================================
-       TIMER (ÉCRAN DE DÉCOMPTE)
-       ============================================ */
-    
-    /* Container de l'écran timer */
     .timer-screen {
       height: 100vh;
       height: 100dvh;
       display: flex;
       flex-direction: column;
-      padding: max(20px, env(safe-area-inset-top)) 20px max(20px, env(safe-area-inset-bottom));
-      justify-content: space-between; /* Header en haut, contenu au centre, contrôles en bas */
-      overflow: hidden; /* Empêche tout scroll */
+      padding: max(80px, calc(env(safe-area-inset-top) + 60px)) 20px max(20px, env(safe-area-inset-bottom));
+      justify-content: space-between;
+      overflow: hidden;
     }
 
-    /* Header du timer avec bouton retour */
     .timer-header {
       display: flex;
-      justify-content: space-between;
+      justify-content: center;
       align-items: center;
       max-width: 600px;
       margin-left: auto;
       margin-right: auto;
       width: 100%;
-      flex-shrink: 0; /* Ne rétrécit pas */
+      flex-shrink: 0;
       position: relative;
     }
 
-    /* Bouton flèche retour timer (hérite du style .back-btn) */
-    .back-arrow {
-      /* Tous les styles sont hérités de .back-btn */
-    }
-
-    /* Contenu principal du timer (nom étape + décompte + points) */
     .timer-main {
       display: flex;
       flex-direction: column;
-      justify-content: center; /* Centre verticalement */
+      justify-content: center;
       align-items: center;
-      gap: 40px; /* Espacement entre les éléments */
+      gap: 40px;
       max-width: 600px;
       margin: 0 auto;
       width: 100%;
-      flex: 1; /* Prend l'espace disponible */
+      flex: 1;
     }
 
-    /* Nom de l'étape en cours */
     .step-name {
       font-size: 20px;
       font-weight: 500;
       text-transform: uppercase;
-      letter-spacing: 1px; /* Espacement entre lettres */
+      letter-spacing: 1px;
       text-align: center;
     }
 
-    /* Container du décompte (même structure que time-fields) */
     .countdown-container {
       display: flex;
       align-items: center;
@@ -708,7 +625,6 @@
       gap: 4px;
     }
 
-    /* Affichage des chiffres du décompte */
     .countdown-digit {
       font-size: 90px;
       font-weight: 800;
@@ -716,7 +632,7 @@
       letter-spacing: -4px;
       line-height: 1;
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
-      font-variant-numeric: tabular-nums; /* Chiffres de largeur fixe */
+      font-variant-numeric: tabular-nums;
     }
 
     @media (min-width: 768px) {
@@ -725,7 +641,6 @@
       }
     }
 
-    /* Séparateur : du countdown */
     .countdown-separator {
       font-size: 60px;
       font-weight: 800;
@@ -742,45 +657,39 @@
       }
     }
 
-    /* Classe appliquée quand il reste moins de 10 secondes */
     .countdown-digit.warning {
-      color: #d61e33; /* Rouge d'alerte */
+      color: #d61e33;
     }
     
     .countdown-separator.warning {
-      color: #d61e33; /* Rouge d'alerte */
+      color: #d61e33;
     }
 
-    /* Container des points de progression des étapes */
     .progress-dots {
-      display: grid;
-      grid-template-columns: repeat(5, 24px);
+      display: flex;
+      flex-wrap: wrap;
       gap: 12px;
       justify-content: center;
-      max-width: 400px;
+      max-width: 180px;
     }
 
-    /* Un point de progression */
     .progress-dot {
       width: 24px;
       height: 24px;
       border-radius: 50%;
-      background: #E0E0E0; /* Gris clair par défaut */
+      background: #E0E0E0;
       transition: all 0.3s ease;
     }
 
-    /* Point d'étape complétée */
     .progress-dot.completed {
-      background: #000000; /* Noir */
+      background: #000000;
     }
 
-    /* Point de l'étape en cours */
     .progress-dot.active {
       background: #000000;
-      transform: scale(1.2); /* Légèrement plus grand */
+      transform: scale(1.2);
     }
 
-    /* Container des boutons de contrôle du timer */
     .timer-controls {
       display: flex;
       flex-direction: column;
@@ -792,16 +701,15 @@
       padding: 0 5px;
     }
 
-    /* Bouton de contrôle (démarrer, pause, suivant, reset) */
     .control-btn {
       width: 100%;
       padding: 24px 16px;
       font-size: 16px;
       font-weight: 600;
-      background: #F5F5F5; /* Gris clair par défaut */
+      background: #F5F5F5;
       color: #1A1A1A;
-      border: 2px solid #000000; /* Bordure noire */
-      border-radius: 14px;
+      border: none;
+      border-radius: 100px;
       cursor: pointer;
       transition: all 0.3s ease;
       text-transform: uppercase;
@@ -818,50 +726,42 @@
       }
     }
 
-    /* Bouton principal (démarrer) */
     .control-btn.primary {
-      background: #008000; /* Vert */
+      background: #00713d;
       color: #FFFFFF;
-      border-color: #008000;
     }
 
-    /* Bouton pause */
     .control-btn.pause {
-      background: #FF6B35; /* Orange */
+      background: #FF6B35;
       color: #FFFFFF;
-      border-color: #FF6B35;
     }
 
-    /* Bouton reprendre */
     .control-btn.resume {
-      background: #1e8fd6; /* Bleu */
+      background: #1e8fd6;
       color: #FFFFFF;
-      border-color: #1e8fd6;
     }
 
-    /* Bouton reset */
     .control-btn.reset {
-      background: #d61e33; /* Rouge */
+      background: #e84033;
       color: #FFFFFF;
-      border-color: #d61e33;
     }
 
     .control-btn:active {
       transform: scale(0.98);
     }
-
-    /* ============================================
-       PAGE DE RÉGLAGES
-       ============================================ */
     
-    /* Container de l'écran de réglages */
+    #skipBtn {
+      background: #f2b826;
+      color: #000000;
+    }
+
     .settings-screen {
       height: 100vh;
       height: 100dvh;
       display: flex;
       flex-direction: column;
       padding: max(15px, env(safe-area-inset-top)) 20px max(20px, env(safe-area-inset-bottom));
-      overflow: hidden; /* Empêche le scroll de l'écran entier */
+      overflow: hidden;
     }
 
     @media (min-width: 768px) {
@@ -870,7 +770,6 @@
       }
     }
 
-    /* Header des réglages avec titre et bouton fermer */
     .settings-header {
       display: flex;
       justify-content: space-between;
@@ -890,16 +789,14 @@
       }
     }
 
-    /* Titre "réglages" */
     .settings-header h2 {
       font-size: 18px;
       font-weight: 600;
       text-transform: lowercase;
       color: #666666;
-      margin: 0 auto; /* Centré */
+      margin: 0 auto;
     }
 
-    /* Bouton fermer (X) */
     .close-icon {
       font-size: 36px;
       cursor: pointer;
@@ -923,7 +820,6 @@
       transform: scale(0.9);
     }
 
-    /* Liste des étapes dans les réglages */
     .settings-list {
       display: flex;
       flex-direction: column;
@@ -931,11 +827,17 @@
       max-width: 600px;
       margin: 0 auto;
       width: 100%;
-      flex: 1; /* Prend l'espace disponible */
-      overflow-y: auto; /* Scroll si beaucoup d'étapes */
+      flex: 1;
+      overflow-y: auto;
       -webkit-overflow-scrolling: touch;
-      padding-right: 5px; /* Espace pour la scrollbar */
-      min-height: 0; /* Important pour que le scroll fonctionne dans flex */
+      padding-right: 5px;
+      min-height: 0;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .settings-list::-webkit-scrollbar {
+      display: none;
     }
 
     @media (min-width: 768px) {
@@ -944,10 +846,9 @@
       }
     }
 
-    /* Une ligne de réglage d'étape */
     .setting-item {
       display: flex;
-      flex-wrap: wrap; /* Peut passer à la ligne sur petits écrans */
+      flex-wrap: wrap;
       gap: 8px;
       align-items: center;
       padding: 10px;
@@ -959,13 +860,12 @@
 
     @media (min-width: 768px) {
       .setting-item {
-        flex-wrap: nowrap; /* Pas de retour à la ligne sur grand écran */
+        flex-wrap: nowrap;
         gap: 10px;
         padding: 12px 16px;
       }
     }
 
-    /* Numéro d'ordre de l'étape */
     .setting-item .order-number {
       font-size: 14px;
       font-weight: 700;
@@ -980,15 +880,14 @@
       }
     }
 
-    /* Input du nom de l'étape */
     .setting-item input[type="text"] {
       padding: 0;
       font-size: 14px;
       border: none;
       background: transparent;
-      text-transform: uppercase; /* Force les majuscules */
+      text-transform: uppercase;
       font-weight: 600;
-      flex: 1; /* Prend l'espace disponible */
+      flex: 1;
       min-width: 0;
       color: #1A1A1A;
       width: 100%;
@@ -1000,58 +899,52 @@
       }
     }
 
-    /* Style du focus sur l'input texte */
     .setting-item input[type="text"]:focus {
-      outline: 2px solid #1A1A1A; /* Contour noir */
-      background: #FFFFFF; /* Fond blanc */
+      outline: 2px solid #1A1A1A;
+      background: #FFFFFF;
     }
 
-    /* Container des inputs de temps (minutes et secondes) */
     .setting-item .time-group {
       display: flex;
       gap: 6px;
       align-items: center;
-      flex-shrink: 0; /* Ne rétrécit pas */
+      flex-shrink: 0;
     }
 
-    /* Container des boutons de contrôle (↑ ↓ ×) */
     .setting-item .controls-wrapper {
       display: flex;
       gap: 4px;
       align-items: center;
       flex-shrink: 0;
-      margin-left: auto; /* Pousse vers la droite */
+      margin-left: auto;
     }
 
-    /* Layout alternatif pour très petits écrans (< 500px) */
     @media (max-width: 500px) {
       .setting-item {
         padding: 10px;
       }
       
-      /* Ordre d'affichage personnalisé */
       .setting-item .order-number {
-        order: 1; /* Affiché en premier */
+        order: 1;
       }
       
       .setting-item input[type="text"] {
-        order: 2; /* Nom en deuxième */
-        flex-basis: calc(100% - 40px); /* Largeur calculée */
+        order: 2;
+        flex-basis: calc(100% - 40px);
       }
       
       .setting-item .time-group {
-        order: 3; /* Temps en troisième */
+        order: 3;
         margin-top: 4px;
       }
       
       .setting-item .controls-wrapper {
-        order: 4; /* Contrôles en dernier */
+        order: 4;
         margin-left: auto;
         margin-top: 4px;
       }
     }
 
-    /* Input de type number (minutes et secondes) */
     .setting-item input[type="number"] {
       padding: 0;
       font-size: 14px;
@@ -1059,7 +952,7 @@
       border: none;
       background: transparent;
       font-weight: 700;
-      width: 42px; /* Largeur fixe pour 2 chiffres */
+      width: 42px;
       color: #1A1A1A;
     }
 
@@ -1073,7 +966,6 @@
       outline: none;
     }
 
-    /* Label "min" ou "sec" à côté des inputs de temps */
     .setting-item .time-label {
       font-size: 10px;
       text-transform: lowercase;
@@ -1081,7 +973,6 @@
       font-weight: 600;
     }
 
-    /* Bouton icône (↑ ↓ ×) */
     .icon-btn {
       font-size: 20px;
       cursor: pointer;
@@ -1089,10 +980,10 @@
       background: none;
       border: none;
       text-align: center;
-      color: #999999; /* Gris clair par défaut */
+      color: #999999;
       transition: all 0.2s ease;
       flex-shrink: 0;
-      min-width: 28px; /* Largeur minimum pour zone de clic */
+      min-width: 28px;
     }
 
     @media (min-width: 768px) {
@@ -1102,16 +993,14 @@
       }
     }
 
-    /* Hover sur les boutons icônes */
     .icon-btn:hover {
-      color: #1A1A1A; /* Noir au survol */
+      color: #1A1A1A;
     }
 
     .icon-btn:active {
       transform: scale(0.9);
     }
 
-    /* Bouton "ajouter une étape" */
     .add-step-btn {
       padding: 14px;
       font-size: 15px;
@@ -1139,13 +1028,11 @@
       }
     }
 
-    /* Effet au clic sur "ajouter une étape" */
     .add-step-btn:active {
       transform: scale(0.98);
-      background: #E0E0E0; /* Gris plus foncé */
+      background: #E0E0E0;
     }
 
-    /* Container des boutons d'actions (sauvegarder) */
     .settings-actions {
       display: flex;
       gap: 10px;
@@ -1161,7 +1048,6 @@
       }
     }
 
-    /* Bouton "sauvegarder" */
     .save-btn {
       flex: 1;
       padding: 16px;
@@ -1174,7 +1060,7 @@
       cursor: pointer;
       transition: all 0.3s ease;
       text-transform: lowercase;
-      box-shadow: 0 3px 0 0 #E0E0E0; /* Ombre grise */
+      box-shadow: 0 3px 0 0 #E0E0E0;
     }
 
     @media (min-width: 768px) {
@@ -1188,32 +1074,96 @@
       transform: scale(0.98);
     }
 
-    /* Classe utilitaire pour masquer un élément */
     .hidden {
-      display: none !important; /* !important pour forcer le masquage */
+      display: none !important;
     }
 
-    /* ============================================
-       MEDIA QUERIES POUR TRÈS PETITS ÉCRANS
-       ============================================ */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 20px;
+    }
 
-    /* Optimisations spécifiques pour iPhone 11 (414x896) */
+    .modal-content {
+      background: #FFFFFF;
+      border-radius: 20px;
+      padding: 30px;
+      max-width: 340px;
+      width: 100%;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .modal-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #1A1A1A;
+      text-align: center;
+      margin-bottom: 12px;
+      text-transform: lowercase;
+    }
+
+    .modal-message {
+      font-size: 15px;
+      color: #666666;
+      text-align: center;
+      margin-bottom: 24px;
+      line-height: 1.4;
+    }
+
+    .modal-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .modal-btn {
+      padding: 16px;
+      font-size: 16px;
+      font-weight: 700;
+      border: none;
+      border-radius: 100px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: lowercase;
+    }
+
+    .modal-btn-confirm {
+      background: #e84033;
+      color: #FFFFFF;
+    }
+
+    .modal-btn-cancel {
+      background: #F5F5F5;
+      color: #1A1A1A;
+    }
+
+    .modal-btn:active {
+      transform: scale(0.98);
+    }
+
     @media only screen 
       and (device-width: 414px) 
       and (device-height: 896px) 
       and (-webkit-device-pixel-ratio: 2) {
       
       body {
-        /* S'assure que le contenu respecte les zones sûres */
         padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
       }
       
       .process-btn {
-        font-size: 95px; /* Ajusté pour iPhone 11 */
+        font-size: 95px;
       }
       
       .countdown-digit {
-        font-size: 95px; /* Optimisé pour l'écran de l'iPhone 11 */
+        font-size: 95px;
       }
       
       .countdown-separator {
@@ -1221,15 +1171,14 @@
       }
       
       .control-btn {
-        min-height: 62px; /* Taille optimale pour le pouce */
+        min-height: 62px;
         font-size: 16px;
       }
     }
 
-    /* Écrans de moins de 700px de hauteur */
     @media (max-height: 700px) {
       .countdown {
-        font-size: 80px; /* Réduit le décompte */
+        font-size: 80px;
       }
       .time-fields input {
         font-size: 80px;
@@ -1270,10 +1219,9 @@
       }
     }
 
-    /* Écrans de moins de 600px de hauteur (très petits smartphones) */
     @media (max-height: 600px) {
       .timer-main {
-        gap: 30px; /* Réduit l'espacement */
+        gap: 30px;
       }
       .countdown {
         font-size: 70px;
@@ -1337,36 +1285,23 @@
 </head>
 <body>
   
-  <!-- ============================================
-       PAGE D'ACCUEIL
-       Première page affichée : choix entre C-41 et N&B
-       ============================================ -->
   <div id="welcomeScreen" class="welcome-screen">
     <div class="welcome-content">
-      <!-- Choix du processus photo -->
       <div class="process-choice">
-        <!-- Option C-41 (couleur) -->
         <div class="process-option">
           <button class="process-btn" onclick="selectProcess('c41')">C-41</button>
         </div>
-        <!-- Option N&B (noir et blanc) -->
         <div class="process-option">
           <button class="process-btn" onclick="selectProcess('nb')">N&B</button>
         </div>
       </div>
     </div>
-    <!-- Logo affiché en bas de page -->
     <div class="welcome-logo">
       <img src="logo.png" alt="FilmLab Logo">
     </div>
   </div>
 
-  <!-- ============================================
-       ÉCRAN DE CONFIGURATION C-41
-       Permet de paramétrer les durées du révélateur et bleach
-       ============================================ -->
   <div id="configC41Screen" class="config-screen hidden">
-    <!-- Bouton retour vers l'accueil avec icône SVG -->
     <button class="back-btn config-back-btn" onclick="backToWelcome()">
       <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
         <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
@@ -1374,24 +1309,18 @@
     </button>
     
     <div class="time-inputs">
-      <!-- Titre -->
       <div class="config-title">configuration</div>
       
-      <!-- Container des deux champs de saisie -->
       <div class="time-inputs-container">
-        <!-- Champ révélateur -->
         <div class="time-input-row">
           <label>révélateur</label>
           <div class="time-fields">
-            <!-- Input minutes -->
             <input type="number" id="revMin" min="0" max="99" value="00">
             <span class="time-separator">:</span>
-            <!-- Input secondes -->
             <input type="number" id="revSec" min="0" max="59" value="00">
           </div>
         </div>
         
-        <!-- Champ bleach -->
         <div class="time-input-row">
           <label>bleach</label>
           <div class="time-fields">
@@ -1403,16 +1332,10 @@
       </div>
     </div>
     
-    <!-- Bouton de validation qui passe à l'écran des étapes -->
     <button class="validate-btn" onclick="validateC41()">valider</button>
   </div>
 
-  <!-- ============================================
-       ÉCRAN DE CONFIGURATION N&B
-       Permet de paramétrer les durées du révélateur et fixateur
-       ============================================ -->
   <div id="configNBScreen" class="config-screen hidden">
-    <!-- Bouton retour vers l'accueil avec icône SVG -->
     <button class="back-btn config-back-btn" onclick="backToWelcome()">
       <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
         <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
@@ -1423,7 +1346,6 @@
       <div class="config-title">configuration</div>
       
       <div class="time-inputs-container">
-        <!-- Champ révélateur -->
         <div class="time-input-row">
           <label>révélateur</label>
           <div class="time-fields">
@@ -1433,7 +1355,6 @@
           </div>
         </div>
         
-        <!-- Champ fixateur -->
         <div class="time-input-row">
           <label>fixateur</label>
           <div class="time-fields">
@@ -1448,20 +1369,13 @@
     <button class="validate-btn" onclick="validateNB()">valider</button>
   </div>
 
-  <!-- ============================================
-       ÉCRAN DE LA LISTE DES ÉTAPES
-       Affiche toutes les étapes du processus avec progression
-       ============================================ -->
   <div id="stepsScreen" class="steps-screen hidden">
-    <!-- Header avec boutons navigation -->
     <div class="steps-header">
-      <!-- Retour vers configuration avec icône SVG -->
       <button class="back-btn back-to-config" onclick="backToConfig()">
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
         </svg>
       </button>
-      <!-- Bouton réglages (roue dentée SVG) -->
       <button class="settings-icon" onclick="openSettings()">
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path d="M12 15.5C10.067 15.5 8.5 13.933 8.5 12C8.5 10.067 10.067 8.5 12 8.5C13.933 8.5 15.5 10.067 15.5 12C15.5 13.933 13.933 15.5 12 15.5ZM19.43 12.97C19.47 12.65 19.5 12.33 19.5 12C19.5 11.67 19.47 11.34 19.43 11L21.54 9.37C21.73 9.22 21.78 8.95 21.66 8.73L19.66 5.27C19.54 5.05 19.27 4.96 19.05 5.05L16.56 6.05C16.04 5.66 15.5 5.32 14.87 5.07L14.5 2.42C14.46 2.18 14.25 2 14 2H10C9.75 2 9.54 2.18 9.5 2.42L9.13 5.07C8.5 5.32 7.96 5.66 7.44 6.05L4.95 5.05C4.73 4.96 4.46 5.05 4.34 5.27L2.34 8.73C2.21 8.95 2.27 9.22 2.46 9.37L4.57 11C4.53 11.34 4.5 11.67 4.5 12C4.5 12.33 4.53 12.65 4.57 12.97L2.46 14.63C2.27 14.78 2.21 15.05 2.34 15.27L4.34 18.73C4.46 18.95 4.73 19.03 4.95 18.95L7.44 17.94C7.96 18.34 8.5 18.68 9.13 18.93L9.5 21.58C9.54 21.82 9.75 22 10 22H14C14.25 22 14.46 21.82 14.5 21.58L14.87 18.93C15.5 18.67 16.04 18.34 16.56 17.94L19.05 18.95C19.27 19.03 19.54 18.95 19.66 18.73L21.66 15.27C21.78 15.05 21.73 14.78 21.54 14.63L19.43 12.97Z"/>
@@ -1469,27 +1383,18 @@
       </button>
     </div>
     
-    <!-- Contenu principal -->
     <div class="steps-content">
-      <!-- Titre de la page -->
       <div class="steps-title">étapes</div>
       
-      <!-- Grille de points représentant chaque étape -->
-      <!-- Rempli dynamiquement par JavaScript -->
       <div class="steps-matrix" id="stepsMatrix"></div>
       
-      <!-- Liste détaillée des étapes avec noms et durées -->
-      <!-- Rempli dynamiquement par JavaScript -->
       <div class="steps-details" id="stepsDetails"></div>
       
-      <!-- Barre de progression et temps total -->
       <div class="steps-progress-container">
-        <!-- Pourcentage d'avancement -->
         <div class="progress-percentage-container">
           <div class="progress-percentage" id="progressPercentage">0%</div>
         </div>
         
-        <!-- Temps total du processus -->
         <div class="total-time-container">
           <div class="total-time" id="totalTime">15:30</div>
           <div class="total-label">total</div>
@@ -1497,145 +1402,92 @@
       </div>
     </div>
     
-    <!-- Bouton démarrer en bas -->
     <div class="steps-bottom">
       <button class="start-btn" onclick="startProcess()">démarrer</button>
     </div>
   </div>
 
-  <!-- ============================================
-       ÉCRAN TIMER
-       Affiche le décompte de l'étape en cours
-       ============================================ -->
   <div id="timerScreen" class="timer-screen hidden">
-    <!-- Header avec bouton retour -->
     <div class="timer-header">
-      <!-- Bouton retour avec icône SVG -->
       <button class="back-btn back-arrow" onclick="backToSteps()">
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
         </svg>
       </button>
-      <div></div> <!-- Div vide pour équilibrer le flexbox -->
+      <div></div>
     </div>
     
-    <!-- Contenu principal : nom étape + décompte + points -->
     <div class="timer-main">
-      <!-- Nom de l'étape en cours -->
       <div class="step-name" id="currentStepName">PRÉ-LAVAGE #1</div>
       
-      <!-- Décompte en grandes chiffres (même structure que config) -->
       <div class="countdown-container" id="countdownContainer">
         <span class="countdown-digit" id="countdownMinutes">1</span>
         <span class="countdown-separator">:</span>
         <span class="countdown-digit" id="countdownSeconds">00</span>
       </div>
       
-      <!-- Points de progression (grille de dots) -->
-      <!-- Rempli dynamiquement par JavaScript -->
       <div class="progress-dots" id="progressDots"></div>
     </div>
     
-    <!-- Boutons de contrôle du timer -->
     <div class="timer-controls">
-      <!-- Bouton démarrer/pause/reprendre (change dynamiquement) -->
       <button class="control-btn primary" id="playPauseBtn" onclick="toggleTimer()">DÉMARRER</button>
       
-      <!-- Bouton passer à l'étape suivante -->
       <button class="control-btn" id="skipBtn" onclick="skipStep()">SUIVANT</button>
       
-      <!-- Bouton recommencer depuis le début -->
       <button class="control-btn reset" id="resetBtn" onclick="resetTimer()">RESET</button>
     </div>
   </div>
 
-  <!-- ============================================
-       AUDIO
-       Son joué à la fin de chaque étape
-       ============================================ -->
   <audio id="stepCompleteSound" preload="auto">
-    <!-- Format MP3 pour la plupart des navigateurs -->
     <source src="notification.mp3" type="audio/mpeg">
-    <!-- Format OGG en fallback -->
     <source src="notification.ogg" type="audio/ogg">
   </audio>
 
-  <!-- ============================================
-       ÉCRAN DE RÉGLAGES
-       Permet de modifier, ajouter, supprimer, réorganiser les étapes
-       ============================================ -->
   <div id="settingsScreen" class="settings-screen hidden">
-    <!-- Header avec titre et bouton fermer -->
     <div class="settings-header">
       <h2>réglages</h2>
       <button class="close-icon" onclick="closeSettings()">×</button>
     </div>
     
-    <!-- Liste des étapes modifiables -->
-    <!-- Rempli dynamiquement par JavaScript -->
     <div class="settings-list" id="settingsList"></div>
     
-    <!-- Bouton ajouter une étape -->
     <div class="settings-actions">
       <button class="add-step-btn" onclick="addNewStep()">+ ajouter une étape</button>
     </div>
     
-    <!-- Bouton sauvegarder les modifications -->
     <div class="settings-actions">
       <button class="save-btn" onclick="saveSettings()">sauvegarder</button>
     </div>
   </div>
 
+  <div id="confirmModal" class="modal-overlay hidden">
+    <div class="modal-content">
+      <div class="modal-message">Êtes-vous sûr de vouloir recommencer depuis le début ?</div>
+      <div class="modal-buttons">
+        <button class="modal-btn modal-btn-confirm" onclick="confirmReset()">RESET</button>
+        <button class="modal-btn modal-btn-cancel" onclick="closeModal()">annuler</button>
+      </div>
+    </div>
+  </div>
+
   <script>
-    // ============================================
-    // VARIABLES GLOBALES
-    // ============================================
-    
-    // Tableau contenant toutes les étapes du processus actuel
-    // Chaque étape est un objet { name: string, duration: number }
     let currentSteps = [];
-    
-    // Index de l'étape en cours dans le tableau currentSteps
     let currentStepIndex = 0;
-    
-    // ID de l'intervalle du timer (setInterval)
-    // Permet de stopper le timer avec clearInterval()
     let timerInterval = null;
-    
-    // Nombre de secondes restantes pour l'étape en cours
     let remainingSeconds = 0;
-    
-    // Booléen indiquant si le timer est en cours d'exécution
     let isRunning = false;
-    
-    // Tableau des index des étapes complétées
     let completedSteps = [];
-    
-    // Type de processus actuel : 'c41' ou 'nb'
     let currentProcess = '';
 
-    // ============================================
-    // FONCTIONS DE NAVIGATION
-    // ============================================
-    
-    /**
-     * Retour à l'écran d'accueil depuis la configuration
-     * Masque les écrans de config et affiche l'accueil
-     */
     function backToWelcome() {
       document.getElementById('configC41Screen').classList.add('hidden');
       document.getElementById('configNBScreen').classList.add('hidden');
       document.getElementById('welcomeScreen').classList.remove('hidden');
     }
 
-    /**
-     * Retour à la configuration depuis l'écran des étapes
-     * Affiche l'écran de config correspondant au processus actuel
-     */
     function backToConfig() {
       document.getElementById('stepsScreen').classList.add('hidden');
       
-      // Affiche le bon écran de config selon le processus
       if (currentProcess === 'c41') {
         document.getElementById('configC41Screen').classList.remove('hidden');
       } else if (currentProcess === 'nb') {
@@ -1643,78 +1495,48 @@
       }
     }
 
-    /**
-     * Sélection du processus depuis l'accueil
-     * @param {string} type - 'c41' ou 'nb'
-     */
     function selectProcess(type) {
       if (type === 'c41') {
-        // Masque l'accueil et affiche la config C-41
         document.getElementById('welcomeScreen').classList.add('hidden');
         document.getElementById('configC41Screen').classList.remove('hidden');
       } else if (type === 'nb') {
-        // Masque l'accueil et affiche la config N&B
         document.getElementById('welcomeScreen').classList.add('hidden');
         document.getElementById('configNBScreen').classList.remove('hidden');
       }
     }
 
-    // ============================================
-    // VALIDATION DES CONFIGURATIONS
-    // ============================================
-    
-    /**
-     * Validation de la configuration C-41
-     * Charge les étapes sauvegardées ou crée les étapes par défaut
-     * Met à jour les durées du révélateur et bleach avec les valeurs saisies
-     */
     function validateC41() {
-      currentProcess = 'c41'; // Définit le processus actuel
+      currentProcess = 'c41';
       
-      // Tente de charger les étapes depuis le localStorage
       const saved = localStorage.getItem('c41_steps');
       
       if (saved) {
         try {
-          // Parse les étapes sauvegardées
           currentSteps = JSON.parse(saved);
           
-          // Récupère les valeurs saisies dans les inputs
           const revMin = parseInt(document.getElementById('revMin').value) || 0;
           const revSec = parseInt(document.getElementById('revSec').value) || 0;
           const bleachMin = parseInt(document.getElementById('bleachMin').value) || 0;
           const bleachSec = parseInt(document.getElementById('bleachSec').value) || 0;
           
-          // Convertit en secondes
           const revDuration = revMin * 60 + revSec;
           const bleachDuration = bleachMin * 60 + bleachSec;
           
-          // Cherche l'index du révélateur et du bleach dans les étapes
-          // Attention : exclut "LAVAGE RÉVÉLATEUR" avec !s.name.includes('LAVAGE')
           const revIndex = currentSteps.findIndex(s => s.name.includes('RÉVÉLATEUR') && !s.name.includes('LAVAGE'));
           const bleachIndex = currentSteps.findIndex(s => s.name === 'BLEACH');
           
-          // Met à jour les durées si les étapes existent
           if (revIndex >= 0) currentSteps[revIndex].duration = revDuration;
           if (bleachIndex >= 0) currentSteps[bleachIndex].duration = bleachDuration;
         } catch (e) {
-          // En cas d'erreur de parsing, crée les étapes par défaut
           createDefaultC41Steps();
         }
       } else {
-        // Pas d'étapes sauvegardées : crée les étapes par défaut
         createDefaultC41Steps();
       }
       
-      // Affiche l'écran des étapes
       displaySteps();
     }
 
-    /**
-     * Validation de la configuration N&B
-     * Charge les étapes sauvegardées ou crée les étapes par défaut
-     * Met à jour les durées du révélateur et fixateur avec les valeurs saisies
-     */
     function validateNB() {
       currentProcess = 'nb';
       
@@ -1724,7 +1546,6 @@
         try {
           currentSteps = JSON.parse(saved);
           
-          // Récupère les valeurs saisies
           const revMin = parseInt(document.getElementById('nbRevMin').value) || 0;
           const revSec = parseInt(document.getElementById('nbRevSec').value) || 0;
           const fixMin = parseInt(document.getElementById('nbFixMin').value) || 0;
@@ -1733,7 +1554,6 @@
           const revDuration = revMin * 60 + revSec;
           const fixDuration = fixMin * 60 + fixSec;
           
-          // Cherche et met à jour révélateur et fixateur
           const revIndex = currentSteps.findIndex(s => s.name.includes('RÉVÉLATEUR') && !s.name.includes('LAVAGE'));
           const fixIndex = currentSteps.findIndex(s => s.name === 'FIXATEUR');
           
@@ -1749,10 +1569,6 @@
       displaySteps();
     }
     
-    /**
-     * Crée les étapes par défaut pour le processus N&B
-     * Utilise les valeurs saisies dans la configuration
-     */
     function createDefaultNBSteps() {
       const revMin = parseInt(document.getElementById('nbRevMin').value) || 0;
       const revSec = parseInt(document.getElementById('nbRevSec').value) || 0;
@@ -1762,7 +1578,6 @@
       const revDuration = revMin * 60 + revSec;
       const fixDuration = fixMin * 60 + fixSec;
       
-      // Crée le tableau d'étapes par défaut
       currentSteps = [
         { name: 'PRÉ-LAVAGE', duration: 60 },
         { name: 'RÉVÉLATEUR', duration: revDuration },
@@ -1772,10 +1587,6 @@
       ];
     }
     
-    /**
-     * Crée les étapes par défaut pour le processus C-41
-     * Utilise les valeurs saisies dans la configuration
-     */
     function createDefaultC41Steps() {
       const revMin = parseInt(document.getElementById('revMin').value) || 0;
       const revSec = parseInt(document.getElementById('revSec').value) || 0;
@@ -1785,7 +1596,6 @@
       const revDuration = revMin * 60 + revSec;
       const bleachDuration = bleachMin * 60 + bleachSec;
       
-      // Crée le tableau d'étapes par défaut pour C-41 (9 étapes)
       currentSteps = [
         { name: 'PRÉ-LAVAGE #1', duration: 60 },
         { name: 'PRÉ-LAVAGE #2', duration: 60 },
@@ -1799,46 +1609,29 @@
       ];
     }
 
-    // ============================================
-    // AFFICHAGE DES ÉTAPES
-    // ============================================
-    
-    /**
-     * Affiche l'écran de la liste des étapes
-     * Met à jour le temps total, la progression, les dots et la liste détaillée
-     */
     function displaySteps() {
-      // Masque les écrans de config
       document.getElementById('configC41Screen').classList.add('hidden');
       document.getElementById('configNBScreen').classList.add('hidden');
-      // Affiche l'écran des étapes
       document.getElementById('stepsScreen').classList.remove('hidden');
       
-      // Calcule le temps total en secondes
       const totalSeconds = currentSteps.reduce((sum, step) => sum + step.duration, 0);
       const totalMins = Math.floor(totalSeconds / 60);
       const totalSecs = totalSeconds % 60;
-      // Affiche le temps total au format MM:SS
       document.getElementById('totalTime').textContent = `${totalMins}:${totalSecs.toString().padStart(2, '0')}`;
       
-      // Calcule et affiche le pourcentage d'avancement
       const progressPercentage = currentSteps.length > 0 
         ? Math.round((completedSteps.length / currentSteps.length) * 100)
         : 0;
       document.getElementById('progressPercentage').textContent = `${progressPercentage}%`;
       
-      // Crée la grille de dots (points représentant les étapes)
       const stepsMatrix = document.getElementById('stepsMatrix');
-      stepsMatrix.innerHTML = ''; // Vide le contenu précédent
+      stepsMatrix.innerHTML = '';
       
-      // Boucle sur chaque étape
       currentSteps.forEach((step, index) => {
         const dot = document.createElement('div');
         dot.className = 'step-dot';
-        // Attribut data-name pour le tooltip au survol
         dot.setAttribute('data-name', step.name);
         
-        // Ajoute la classe 'completed' si l'étape est terminée
         if (completedSteps.includes(index)) {
           dot.classList.add('completed');
         }
@@ -1846,7 +1639,6 @@
         stepsMatrix.appendChild(dot);
       });
       
-      // Affiche la liste détaillée des étapes
       const stepsDetails = document.getElementById('stepsDetails');
       stepsDetails.innerHTML = '';
       
@@ -1854,16 +1646,13 @@
         const detailItem = document.createElement('div');
         detailItem.className = 'step-detail-item';
         
-        // Marque comme complétée si dans le tableau completedSteps
         if (completedSteps.includes(index)) {
           detailItem.classList.add('completed');
         }
         
-        // Convertit la durée en minutes:secondes
         const minutes = Math.floor(step.duration / 60);
         const seconds = step.duration % 60;
         
-        // Crée le HTML de la ligne (nom à gauche, durée à droite)
         detailItem.innerHTML = `
           <div class="step-detail-name">${step.name}</div>
           <div class="step-detail-time">${minutes}:${seconds.toString().padStart(2, '0')}</div>
@@ -1873,50 +1662,26 @@
       });
     }
 
-    // ============================================
-    // DÉMARRAGE DU PROCESSUS
-    // ============================================
-    
-    /**
-     * Démarre le processus complet
-     * Réinitialise l'index et les étapes complétées
-     * Affiche l'écran du timer
-     */
     function startProcess() {
-      currentStepIndex = 0; // Commence à la première étape
-      completedSteps = []; // Réinitialise les étapes complétées
+      currentStepIndex = 0;
+      completedSteps = [];
       
-      // Masque l'écran des étapes
       document.getElementById('stepsScreen').classList.add('hidden');
-      // Affiche l'écran du timer
       document.getElementById('timerScreen').classList.remove('hidden');
       
-      // Initialize le timer pour la première étape
       initTimer();
     }
 
-    // ============================================
-    // GESTION DU TIMER
-    // ============================================
-    
-    /**
-     * Initialise le timer pour l'étape en cours
-     * Met à jour l'affichage et réinitialise les contrôles
-     */
     function initTimer() {
       const step = currentSteps[currentStepIndex];
-      remainingSeconds = step.duration; // Durée de l'étape en secondes
+      remainingSeconds = step.duration;
       
-      // Affiche le nom de l'étape
       document.getElementById('currentStepName').textContent = step.name;
       
-      // Met à jour l'affichage du décompte
       updateCountdownDisplay();
       
-      // Met à jour les points de progression
       updateProgressDots();
       
-      // Réinitialise l'état du bouton
       isRunning = false;
       const btn = document.getElementById('playPauseBtn');
       btn.textContent = 'DÉMARRER';
@@ -1924,10 +1689,6 @@
       btn.classList.add('primary');
     }
 
-    /**
-     * Bascule entre démarrer et pause
-     * Appelé par le bouton play/pause
-     */
     function toggleTimer() {
       if (isRunning) {
         pauseTimer();
@@ -1936,91 +1697,49 @@
       }
     }
 
-    /**
-     * Démarre le timer
-     * Lance un setInterval qui décrémente les secondes chaque seconde
-     */
     function startTimer() {
       isRunning = true;
       
-      // Met à jour le bouton en "PAUSE"
       const btn = document.getElementById('playPauseBtn');
       btn.textContent = 'PAUSE';
       btn.classList.remove('resume', 'primary');
       btn.classList.add('pause');
       
-      // Lance l'intervalle (exécuté toutes les 1000ms = 1 seconde)
       timerInterval = setInterval(() => {
-        remainingSeconds--; // Décrémente le temps restant
-        updateCountdownDisplay(); // Met à jour l'affichage
-        updateProgressDots(); // Met à jour les dots
+        remainingSeconds--;
+        updateCountdownDisplay();
+        updateProgressDots();
         
-        // Si le temps est écoulé
         if (remainingSeconds <= 0) {
-          clearInterval(timerInterval); // Arrête l'intervalle
-          playStepCompleteSound(); // Joue le son
-          nextStep(); // Passe à l'étape suivante
+          clearInterval(timerInterval);
+          playStepCompleteSound();
+          nextStep();
         }
       }, 1000);
     }
 
-    /**
-     * Joue le son de notification de fin d'étape
-     * Utilise l'élément audio HTML
-     */
     function playStepCompleteSound() {
       const sound = document.getElementById('stepCompleteSound');
       if (sound) {
-        sound.currentTime = 0; // Remet le son au début
-        // Tente de jouer le son (peut être bloqué par le navigateur)
+        sound.currentTime = 0;
         sound.play().catch(err => {
           console.log('Lecture audio bloquée:', err);
         });
       }
     }
 
-    /**
-     * Met en pause le timer
-     * Arrête l'intervalle et met à jour le bouton
-     */
     function pauseTimer() {
       isRunning = false;
-      clearInterval(timerInterval); // Arrête l'intervalle
+      clearInterval(timerInterval);
       
-      // Met à jour le bouton en "REPRENDRE"
       const btn = document.getElementById('playPauseBtn');
       btn.textContent = 'REPRENDRE';
       btn.classList.remove('primary');
       btn.classList.add('resume');
     }
 
-    /**
-     * Passe à l'étape suivante
-     * Ajoute l'étape actuelle aux complétées
-     * Si c'est la dernière étape, affiche l'écran de fin
-     */
     function nextStep() {
-      // Ajoute l'étape actuelle aux complétées
       completedSteps.push(currentStepIndex);
-      
-      // S'il reste des étapes
-      if (currentStepIndex < currentSteps.length - 1) {
-        currentStepIndex++; // Passe à l'étape suivante
-        initTimer(); // Réinitialise le timer
-        // Note : ne démarre pas automatiquement, l'utilisateur doit cliquer sur DÉMARRER
-      } else {
-        // Toutes les étapes sont terminées
-        showCompletionScreen();
-      }
-    }
-
-    /**
-     * Passe l'étape actuelle (bouton SUIVANT)
-     * Arrête le timer et passe à l'étape suivante
-     */
-    function skipStep() {
-      clearInterval(timerInterval); // Arrête le timer
-      completedSteps.push(currentStepIndex); // Marque comme complétée
       
       if (currentStepIndex < currentSteps.length - 1) {
         currentStepIndex++;
@@ -2030,70 +1749,68 @@
       }
     }
 
-    /**
-     * Affiche l'écran de fin de processus
-     * Retourne à l'écran des étapes et modifie le bouton en "nouveau développement"
-     */
+    function skipStep() {
+      clearInterval(timerInterval);
+      completedSteps.push(currentStepIndex);
+      
+      if (currentStepIndex < currentSteps.length - 1) {
+        currentStepIndex++;
+        initTimer();
+      } else {
+        showCompletionScreen();
+      }
+    }
+
     function showCompletionScreen() {
       clearInterval(timerInterval);
       isRunning = false;
       
-      // Masque le timer et affiche les étapes
       document.getElementById('timerScreen').classList.add('hidden');
       document.getElementById('stepsScreen').classList.remove('hidden');
       displaySteps();
       
-      // Modifie le bouton "démarrer" en "nouveau développement"
       const startBtn = document.querySelector('.start-btn');
       startBtn.textContent = 'nouveau développement';
       startBtn.style.padding = '20px 40px';
       startBtn.style.width = 'auto';
       
-      // Redéfinit le comportement du bouton
       startBtn.onclick = () => {
-        // Réinitialise tout
         currentStepIndex = 0;
         completedSteps = [];
         
-        // Restaure le bouton "démarrer"
         startBtn.textContent = 'démarrer';
         startBtn.style.padding = '20px 60px';
         startBtn.style.width = 'auto';
         startBtn.onclick = startProcess;
         
-        // Retour à l'accueil
         document.getElementById('stepsScreen').classList.add('hidden');
         document.getElementById('welcomeScreen').classList.remove('hidden');
       };
     }
 
-    /**
-     * Réinitialise le timer (bouton RESET)
-     * Demande confirmation puis recommence depuis le début
-     */
     function resetTimer() {
-      // Affiche une confirmation
-      if (confirm('Êtes-vous sûr de vouloir recommencer depuis le début ?')) {
-        clearInterval(timerInterval);
-        isRunning = false;
-        currentStepIndex = 0;
-        completedSteps = [];
-        
-        // Réinitialise le bouton
-        const btn = document.getElementById('playPauseBtn');
-        btn.textContent = 'DÉMARRER';
-        btn.classList.remove('pause', 'resume');
-        btn.classList.add('primary');
-        
-        // Réinitialise le timer
-        initTimer();
-      }
+      document.getElementById('confirmModal').classList.remove('hidden');
     }
 
-    /**
-     * Retour à l'écran des étapes depuis le timer
-     * Arrête le timer en cours
-     */
+    function closeModal() {
+      document.getElementById('confirmModal').classList.add('hidden');
+    }
+
+    function confirmReset() {
+      closeModal();
+      clearInterval(timerInterval);
+      isRunning = false;
+      currentStepIndex = 0;
+      completedSteps = [];
+      
+      const btn = document.getElementById('playPauseBtn');
+      btn.textContent = 'DÉMARRER';
+      btn.classList.remove('pause', 'resume');
+      btn.classList.add('primary');
+      
+      initTimer();
+    }
+
     function backToSteps() {
       clearInterval(timerInterval);
       isRunning = false;
@@ -2102,16 +1819,10 @@
       displaySteps();
     }
 
-    /**
-     * Met à jour l'affichage du décompte
-     * Convertit les secondes en MM:SS
-     * Ajoute la classe 'warning' si moins de 10 secondes
-     */
     function updateCountdownDisplay() {
       const minutes = Math.floor(remainingSeconds / 60);
       const seconds = remainingSeconds % 60;
       
-      // Met à jour les éléments séparés
       const minutesEl = document.getElementById('countdownMinutes');
       const secondsEl = document.getElementById('countdownSeconds');
       const separatorEl = document.querySelector('.countdown-separator');
@@ -2119,7 +1830,6 @@
       minutesEl.textContent = minutes;
       secondsEl.textContent = seconds.toString().padStart(2, '0');
       
-      // Ajoute la classe warning si <= 10 secondes (change la couleur en rouge)
       if (remainingSeconds <= 10 && remainingSeconds > 0) {
         minutesEl.classList.add('warning');
         secondsEl.classList.add('warning');
@@ -2131,88 +1841,58 @@
       }
     }
 
-    /**
-     * Met à jour les points de progression du timer
-     * Affiche tous les dots avec état (complété, actif, à venir)
-     */
     function updateProgressDots() {
       const dotsContainer = document.getElementById('progressDots');
-      dotsContainer.innerHTML = ''; // Vide le contenu
+      dotsContainer.innerHTML = '';
       
-      // Crée un dot pour chaque étape
       currentSteps.forEach((step, index) => {
         const dot = document.createElement('div');
         dot.className = 'progress-dot';
         
-        // Applique les classes selon l'état
         if (completedSteps.includes(index)) {
-          dot.classList.add('completed'); // Noir
+          dot.classList.add('completed');
         } else if (index === currentStepIndex) {
-          dot.classList.add('active'); // Noir et agrandi
+          dot.classList.add('active');
         }
-        // Sinon reste gris clair (couleur par défaut)
         
         dotsContainer.appendChild(dot);
       });
     }
 
-    // ============================================
-    // RÉGLAGES
-    // ============================================
-    
-    /**
-     * Ouvre l'écran de réglages
-     * Masque l'écran des étapes et affiche les réglages
-     */
     function openSettings() {
       document.getElementById('stepsScreen').classList.add('hidden');
       document.getElementById('settingsScreen').classList.remove('hidden');
       displaySettings();
     }
 
-    /**
-     * Ferme l'écran de réglages
-     * Retourne à l'écran des étapes
-     */
     function closeSettings() {
       document.getElementById('settingsScreen').classList.add('hidden');
       document.getElementById('stepsScreen').classList.remove('hidden');
       displaySteps();
     }
 
-    /**
-     * Affiche la liste des étapes dans les réglages
-     * Crée dynamiquement les inputs et boutons pour chaque étape
-     */
     function displaySettings() {
       const settingsList = document.getElementById('settingsList');
-      settingsList.innerHTML = ''; // Vide le contenu précédent
+      settingsList.innerHTML = '';
       
-      // Boucle sur chaque étape
       currentSteps.forEach((step, index) => {
-        // Crée le container de la ligne
         const settingItem = document.createElement('div');
         settingItem.className = 'setting-item';
         
-        // Numéro d'ordre (1, 2, 3...)
         const orderNum = document.createElement('div');
         orderNum.className = 'order-number';
         orderNum.textContent = (index + 1);
         
-        // Input pour le nom de l'étape
         const nameInput = document.createElement('input');
         nameInput.type = 'text';
         nameInput.value = step.name;
-        // Met à jour le tableau quand on modifie
         nameInput.oninput = (e) => {
           currentSteps[index].name = e.target.value.toUpperCase();
         };
         
-        // Container des inputs de temps
         const timeGroup = document.createElement('div');
         timeGroup.className = 'time-group';
         
-        // Input minutes
         const minInput = document.createElement('input');
         minInput.type = 'number';
         minInput.min = '0';
@@ -2223,12 +1903,10 @@
           currentSteps[index].duration = mins * 60 + secs;
         };
         
-        // Label "min"
         const minLabel = document.createElement('span');
         minLabel.className = 'time-label';
         minLabel.textContent = 'min';
         
-        // Input secondes
         const secInput = document.createElement('input');
         secInput.type = 'number';
         secInput.min = '0';
@@ -2240,92 +1918,66 @@
           currentSteps[index].duration = mins * 60 + secs;
         };
         
-        // Label "sec"
         const secLabel = document.createElement('span');
         secLabel.className = 'time-label';
         secLabel.textContent = 'sec';
         
-        // Ajoute les éléments au groupe de temps
         timeGroup.appendChild(minInput);
         timeGroup.appendChild(minLabel);
         timeGroup.appendChild(secInput);
         timeGroup.appendChild(secLabel);
         
-        // Bouton monter (↑)
         const upBtn = document.createElement('button');
         upBtn.className = 'icon-btn';
         upBtn.textContent = '↑';
-        upBtn.onclick = () => moveStep(index, -1); // Monte d'une position
-        if (index === 0) upBtn.style.visibility = 'hidden'; // Masque si première étape
+        upBtn.onclick = () => moveStep(index, -1);
+        if (index === 0) upBtn.style.visibility = 'hidden';
         
-        // Bouton descendre (↓)
         const downBtn = document.createElement('button');
         downBtn.className = 'icon-btn';
         downBtn.textContent = '↓';
-        downBtn.onclick = () => moveStep(index, 1); // Descend d'une position
-        if (index === currentSteps.length - 1) downBtn.style.visibility = 'hidden'; // Masque si dernière étape
+        downBtn.onclick = () => moveStep(index, 1);
+        if (index === currentSteps.length - 1) downBtn.style.visibility = 'hidden';
         
-        // Bouton supprimer (×)
         const deleteBtn = document.createElement('button');
         deleteBtn.className = 'icon-btn';
         deleteBtn.textContent = '×';
-        deleteBtn.style.color = '#FF6B35'; // Couleur orange
+        deleteBtn.style.color = '#FF6B35';
         deleteBtn.style.fontSize = '26px';
         deleteBtn.onclick = () => deleteStep(index);
         
-        // Container des boutons de contrôle
         const controlsWrapper = document.createElement('div');
         controlsWrapper.className = 'controls-wrapper';
         controlsWrapper.appendChild(upBtn);
         controlsWrapper.appendChild(downBtn);
         controlsWrapper.appendChild(deleteBtn);
         
-        // Assemble tous les éléments dans la ligne
         settingItem.appendChild(orderNum);
         settingItem.appendChild(nameInput);
         settingItem.appendChild(timeGroup);
         settingItem.appendChild(controlsWrapper);
         
-        // Ajoute la ligne à la liste
         settingsList.appendChild(settingItem);
       });
     }
 
-    /**
-     * Déplace une étape vers le haut ou le bas
-     * @param {number} index - Index de l'étape à déplacer
-     * @param {number} direction - -1 pour monter, +1 pour descendre
-     */
     function moveStep(index, direction) {
       const newIndex = index + direction;
       
-      // Vérifie que le nouvel index est valide
       if (newIndex < 0 || newIndex >= currentSteps.length) return;
       
-      // Échange les deux étapes
       const temp = currentSteps[index];
       currentSteps[index] = currentSteps[newIndex];
       currentSteps[newIndex] = temp;
       
-      // Rafraîchit l'affichage
       displaySettings();
     }
 
-    /**
-     * Supprime une étape
-     * @param {number} index - Index de l'étape à supprimer
-     */
     function deleteStep(index) {
-      // Supprime l'étape du tableau
       currentSteps.splice(index, 1);
-      // Rafraîchit l'affichage
       displaySettings();
     }
 
-    /**
-     * Ajoute une nouvelle étape à la fin de la liste
-     * Avec un nom par défaut et une durée de 60 secondes
-     */
     function addNewStep() {
       currentSteps.push({
         name: 'NOUVELLE ÉTAPE',
@@ -2334,27 +1986,12 @@
       displaySettings();
     }
 
-    /**
-     * Sauvegarde les réglages dans le localStorage
-     * Sauvegarde selon le processus actuel (c41 ou nb)
-     */
     function saveSettings() {
-      // Détermine la clé de stockage selon le processus
       const storageKey = currentProcess === 'c41' ? 'c41_steps' : 'nb_steps';
-      // Sauvegarde en JSON
       localStorage.setItem(storageKey, JSON.stringify(currentSteps));
-      // Ferme les réglages
       closeSettings();
     }
 
-    // ============================================
-    // INITIALISATION AU CHARGEMENT
-    // ============================================
-    
-    /**
-     * Charge les étapes sauvegardées au chargement de la page
-     * Tente de charger les étapes C-41 par défaut
-     */
     window.addEventListener('DOMContentLoaded', () => {
       const saved = localStorage.getItem('c41_steps');
       if (saved) {
@@ -2366,44 +2003,24 @@
       }
     });
 
-    // ============================================
-    // GESTION DES INPUTS
-    // ============================================
-    
-    /**
-     * Sélectionne automatiquement le contenu des inputs number au focus
-     * Facilite la modification rapide des valeurs
-     */
     document.addEventListener('focus', (e) => {
       if (e.target.type === 'number') {
-        e.target.select(); // Sélectionne tout le contenu
+        e.target.select();
       }
-    }, true); // true = capture phase (avant la propagation)
+    }, true);
 
-    // ============================================
-    // SERVICE WORKER (PWA)
-    // ============================================
-    
-    /**
-     * Enregistre un Service Worker pour transformer l'app en PWA
-     * Permet l'installation sur l'écran d'accueil et le fonctionnement hors ligne
-     */
     if ('serviceWorker' in navigator) {
-      // Code du Service Worker en string
       const swCode = `
         const CACHE_NAME = 'filmlab-v3';
         
-        // Installation : passe immédiatement à l'activation
         self.addEventListener('install', (e) => {
           self.skipWaiting();
         });
         
-        // Activation : prend le contrôle de tous les clients
         self.addEventListener('activate', (e) => {
           e.waitUntil(self.clients.claim());
         });
         
-        // Interception des requêtes : retourne le cache ou fetch
         self.addEventListener('fetch', (e) => {
           e.respondWith(
             caches.match(e.request).then((r) => r || fetch(e.request))
@@ -2411,33 +2028,21 @@
         });
       `;
       
-      // Crée un blob à partir du code
       const blob = new Blob([swCode], { type: 'application/javascript' });
       const swUrl = URL.createObjectURL(blob);
       
-      // Enregistre le Service Worker
-      navigator.serviceWorker.register(swUrl).catch(() => {
-        // Ignore silencieusement les erreurs
-      });
+      navigator.serviceWorker.register(swUrl).catch(() => {});
     }
 
-    // ============================================
-    // MANIFEST (PWA)
-    // ============================================
-    
-    /**
-     * Crée dynamiquement le manifest pour la PWA
-     * Optimisé pour iPhone 11 (414x896 @2x)
-     */
     const manifest = {
-      name: "FilmLab Timing", // Nom complet
-      short_name: "FilmLab", // Nom court
+      name: "FilmLab Timing",
+      short_name: "FilmLab",
       description: "Timer professionnel pour développement photo argentique C-41 et N&B",
-      start_url: ".", // URL de départ
-      display: "standalone", // Mode plein écran
-      orientation: "portrait", // Orientation portrait forcée
-      background_color: "#FFFFFF", // Couleur de fond du splash screen
-      theme_color: "#FFFFFF", // Couleur du thème
+      start_url: ".",
+      display: "standalone",
+      orientation: "portrait",
+      background_color: "#FFFFFF",
+      theme_color: "#FFFFFF",
       icons: [
         {
           src: "logoapp.png",
@@ -2454,11 +2059,9 @@
       ]
     };
     
-    // Crée un blob et une URL pour le manifest
     const manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
     const manifestURL = URL.createObjectURL(manifestBlob);
     
-    // Crée un lien vers le manifest dans le head
     const link = document.createElement('link');
     link.rel = 'manifest';
     link.href = manifestURL;
