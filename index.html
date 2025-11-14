@@ -51,6 +51,11 @@
       margin: 0;
       padding: 0;
       -webkit-tap-highlight-color: transparent;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
     }
 
     html, body {
@@ -73,7 +78,7 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      padding: max(60px, env(safe-area-inset-top)) 30px max(80px, env(safe-area-inset-bottom));
+      padding: max(80px, env(safe-area-inset-top)) 30px max(80px, env(safe-area-inset-bottom));
       position: relative;
     }
 
@@ -317,7 +322,7 @@
       height: 100dvh;
       display: flex;
       flex-direction: column;
-      padding: max(48px, calc(env(safe-area-inset-top) + 28px)) 30px max(80px, env(safe-area-inset-bottom));
+      padding: max(60px, calc(env(safe-area-inset-top) + 40px)) 30px max(80px, env(safe-area-inset-bottom));
       align-items: center;
       overflow: hidden;
     }
@@ -572,7 +577,7 @@
       height: 100dvh;
       display: flex;
       flex-direction: column;
-      padding: max(80px, calc(env(safe-area-inset-top) + 60px)) 20px max(80px, env(safe-area-inset-bottom));
+      padding: max(100px, calc(env(safe-area-inset-top) + 80px)) 20px max(80px, env(safe-area-inset-bottom));
       justify-content: space-between;
       overflow: hidden;
     }
@@ -757,7 +762,7 @@
       height: 100dvh;
       display: flex;
       flex-direction: column;
-      padding: max(48px, calc(env(safe-area-inset-top) + 28px)) 30px max(80px, env(safe-area-inset-bottom));
+      padding: max(60px, calc(env(safe-area-inset-top) + 40px)) 30px max(80px, env(safe-area-inset-bottom));
       align-items: center;
       overflow: hidden;
     }
@@ -865,6 +870,10 @@
       min-width: 80px;
       color: #1A1A1A;
       width: auto;
+      -webkit-user-select: text;
+      -moz-user-select: text;
+      -ms-user-select: text;
+      user-select: text;
     }
 
     @media (min-width: 768px) {
@@ -897,6 +906,9 @@
       font-variant-numeric: tabular-nums;
       flex-shrink: 0;
       white-space: nowrap;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      user-select: none;
     }
 
     .time-display:hover {
@@ -919,6 +931,10 @@
       font-weight: 700;
       width: 40px;
       color: #1A1A1A;
+      -webkit-user-select: text;
+      -moz-user-select: text;
+      -ms-user-select: text;
+      user-select: text;
     }
 
     .time-edit-separator {
