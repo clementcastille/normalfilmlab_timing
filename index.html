@@ -1018,8 +1018,8 @@
     }
 
     .add-step-btn {
-      padding: 14px 40px;
-      font-size: 15px;
+      padding: 16px 40px;
+      font-size: 16px;
       font-weight: 700;
       background: #F5F5F5;
       color: #1A1A1A;
@@ -1028,19 +1028,14 @@
       cursor: pointer;
       transition: all 0.2s ease;
       text-transform: lowercase;
-      margin-top: 12px;
-      max-width: 600px;
-      margin-left: auto;
-      margin-right: auto;
       width: auto;
       flex-shrink: 0;
     }
 
     @media (min-width: 768px) {
       .add-step-btn {
-        padding: 18px;
+        padding: 18px 45px;
         font-size: 16px;
-        margin-top: 20px;
       }
     }
 
@@ -1051,17 +1046,19 @@
 
     .settings-actions {
       display: flex;
-      gap: 10px;
+      gap: 12px;
       width: 100%;
       max-width: 500px;
       margin: 12px auto 0;
       flex-shrink: 0;
-      justify-content: center;
+      justify-content: flex-end;
+      align-items: center;
     }
 
     @media (min-width: 768px) {
       .settings-actions {
         margin: 20px auto 0;
+        gap: 16px;
       }
     }
 
@@ -1076,14 +1073,14 @@
       cursor: pointer;
       transition: all 0.3s ease;
       text-transform: lowercase;
-      box-shadow: 0 3px 0 0 #E0E0E0;
       width: auto;
+      flex-shrink: 0;
     }
 
     @media (min-width: 768px) {
       .save-btn {
-        padding: 20px;
-        font-size: 18px;
+        padding: 18px 55px;
+        font-size: 16px;
       }
     }
 
@@ -1474,9 +1471,6 @@
       
       <div class="settings-actions">
         <button class="add-step-btn" onclick="addNewStep()">+ add step</button>
-      </div>
-      
-      <div class="settings-actions">
         <button class="save-btn" onclick="saveSettings()">save</button>
       </div>
     </div>
