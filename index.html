@@ -757,77 +757,20 @@
       height: 100dvh;
       display: flex;
       flex-direction: column;
-      padding: max(15px, env(safe-area-inset-top)) 20px max(80px, env(safe-area-inset-bottom));
-      overflow: hidden;
-    }
-
-    @media (min-width: 768px) {
-      .settings-screen {
-        padding: max(30px, env(safe-area-inset-top)) 30px max(80px, env(safe-area-inset-bottom));
-      }
-    }
-
-    .settings-header {
-      display: flex;
-      justify-content: space-between;
+      padding: max(48px, calc(env(safe-area-inset-top) + 28px)) 30px max(80px, env(safe-area-inset-bottom));
       align-items: center;
-      margin-bottom: 20px;
-      max-width: 600px;
-      margin-left: auto;
-      margin-right: auto;
-      width: 100%;
-      position: relative;
-      flex-shrink: 0;
-    }
-
-    @media (min-width: 768px) {
-      .settings-header {
-        margin-bottom: 30px;
-      }
-    }
-
-    .settings-header h2 {
-      font-size: 18px;
-      font-weight: 600;
-      text-transform: lowercase;
-      color: #666666;
-      margin: 0 auto;
-    }
-
-    .close-icon {
-      font-size: 36px;
-      cursor: pointer;
-      padding: 5px;
-      background: none;
-      border: none;
-      line-height: 1;
-      color: #1A1A1A;
-      font-weight: 300;
-      position: absolute;
-      right: 20px;
-    }
-
-    @media (min-width: 768px) {
-      .close-icon {
-        right: 30px;
-      }
-    }
-
-    .close-icon:active {
-      transform: scale(0.9);
+      overflow: hidden;
     }
 
     .settings-list {
       display: flex;
       flex-direction: column;
       gap: 8px;
-      max-width: 600px;
-      margin: 0 auto;
       width: 100%;
+      max-width: 500px;
       flex: 1;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
-      padding-right: 5px;
       min-height: 0;
       scrollbar-width: none;
       -ms-overflow-style: none;
@@ -1109,9 +1052,9 @@
     .settings-actions {
       display: flex;
       gap: 10px;
-      max-width: 600px;
-      margin: 12px auto 0;
       width: 100%;
+      max-width: 500px;
+      margin: 12px auto 0;
       flex-shrink: 0;
       justify-content: center;
     }
@@ -1516,19 +1459,26 @@
   <audio id="stepCompleteSound" preload="auto"></audio>
 
   <div id="settingsScreen" class="settings-screen hidden">
-    <div class="settings-header">
-      <h2>settings</h2>
-      <button class="close-icon" onclick="closeSettings()">×</button>
+    <div class="steps-header">
+      <button class="back-btn" onclick="closeSettings()">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+        </svg>
+      </button>
     </div>
     
-    <div class="settings-list" id="settingsList"></div>
-    
-    <div class="settings-actions">
-      <button class="add-step-btn" onclick="addNewStep()">+ add step</button>
-    </div>
-    
-    <div class="settings-actions">
-      <button class="save-btn" onclick="saveSettings()">save</button>
+    <div class="steps-content">
+      <div class="steps-title">settings</div>
+      
+      <div class="settings-list" id="settingsList"></div>
+      
+      <div class="settings-actions">
+        <button class="add-step-btn" onclick="addNewStep()">+ add step</button>
+      </div>
+      
+      <div class="settings-actions">
+        <button class="save-btn" onclick="saveSettings()">save</button>
+      </div>
     </div>
   </div>
 
