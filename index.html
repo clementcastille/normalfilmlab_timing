@@ -902,7 +902,7 @@
       font-weight: 700;
       color: #1A1A1A;
       cursor: pointer;
-      padding: 4px 6px;
+      padding: 10px 12px;
       border-radius: 6px;
       transition: background 0.2s;
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
@@ -912,6 +912,16 @@
       -webkit-touch-callout: none;
       -webkit-user-select: none;
       user-select: none;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+    }
+
+    @media (min-width: 768px) {
+      .time-display {
+        padding: 4px 6px;
+        min-height: auto;
+      }
     }
 
     .time-display:hover {
@@ -925,25 +935,43 @@
     }
 
     .time-edit-input {
-      padding: 2px 4px;
-      font-size: 14px;
+      padding: 8px 6px;
+      font-size: 16px;
       text-align: center;
       border: 1px solid #CCCCCC;
       border-radius: 4px;
       background: #FFFFFF;
       font-weight: 700;
-      width: 40px;
+      width: 50px;
       color: #1A1A1A;
       -webkit-user-select: text;
       -moz-user-select: text;
       -ms-user-select: text;
       user-select: text;
+      min-height: 44px;
+    }
+
+    @media (min-width: 768px) {
+      .time-edit-input {
+        padding: 2px 4px;
+        font-size: 14px;
+        width: 40px;
+        min-height: auto;
+      }
     }
 
     .time-edit-separator {
-      font-size: 14px;
+      font-size: 18px;
       font-weight: 700;
       color: #1A1A1A;
+      padding: 0 4px;
+    }
+
+    @media (min-width: 768px) {
+      .time-edit-separator {
+        font-size: 14px;
+        padding: 0;
+      }
     }
 
     .setting-item .controls-wrapper {
@@ -1486,6 +1514,8 @@
     <div class="steps-content">
       <div class="steps-title">settings</div>
       
+      <div class="steps-matrix" id="settingsMatrix"></div>
+      
       <div class="settings-list" id="settingsList"></div>
       
       <div class="settings-actions">
@@ -1981,6 +2011,22 @@
       const settingsList = document.getElementById('settingsList');
       settingsList.innerHTML = '';
       
+      // Afficher la matrice de ronds
+      const settingsMatrix = document.getElementById('settingsMatrix');
+      settingsMatrix.innerHTML = '';
+      
+      currentSteps.forEach((step, index) => {
+        const dot = document.createElement('div');
+        dot.className = 'step-dot';
+        dot.setAttribute('data-name', step.name);
+        
+        if (completedSteps.includes(index)) {
+          dot.classList.add('completed');
+        }
+        
+        settingsMatrix.appendChild(dot);
+      });
+      
       currentSteps.forEach((step, index) => {
         const settingItem = document.createElement('div');
         settingItem.className = 'setting-item';
@@ -2051,15 +2097,34 @@
           timeDisplay.classList.add('hidden');
           timeEditContainer.classList.remove('hidden');
           minInput.focus();
+          minInput.select();
         };
         
-        const closeEdit = () => {
-          timeDisplay.classList.remove('hidden');
-          timeEditContainer.classList.add('hidden');
+        // Utiliser mousedown/touchstart au lieu de blur pour éviter la fermeture trop rapide
+        const closeEdit = (e) => {
+          // Ne fermer que si on clique en dehors des inputs
+          if (!timeEditContainer.contains(e.target) && e.target !== timeDisplay) {
+            timeDisplay.classList.remove('hidden');
+            timeEditContainer.classList.add('hidden');
+            document.removeEventListener('mousedown', closeEdit);
+            document.removeEventListener('touchstart', closeEdit);
+          }
         };
         
-        minInput.onblur = closeEdit;
-        secInput.onblur = closeEdit;
+        // Ajouter les listeners quand on ouvre l'édition
+        minInput.onfocus = () => {
+          setTimeout(() => {
+            document.addEventListener('mousedown', closeEdit);
+            document.addEventListener('touchstart', closeEdit);
+          }, 100);
+        };
+        
+        secInput.onfocus = () => {
+          setTimeout(() => {
+            document.addEventListener('mousedown', closeEdit);
+            document.addEventListener('touchstart', closeEdit);
+          }, 100);
+        };
         
         timeEditContainer.appendChild(minInput);
         timeEditContainer.appendChild(separator);
