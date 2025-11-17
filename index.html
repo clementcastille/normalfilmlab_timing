@@ -9,6 +9,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="NFL_timing">
   <meta name="description" content="Professional timer for C-41 and B&W film development">
+  <link rel="apple-touch-icon" href="logoapp.png">
   
   <style>
     .chrono-font {
@@ -2211,8 +2212,8 @@
     }
 
     window.addEventListener('DOMContentLoaded', () => {
-      localStorage.removeItem('c41_steps');
-      localStorage.removeItem('nb_steps');
+      // Ne plus effacer le localStorage au chargement
+      // Les données sont maintenant persistantes
       
       const saved = localStorage.getItem('c41_steps');
       if (saved) {
