@@ -277,6 +277,47 @@
       outline: none;
     }
 
+    .time-select {
+      font-size: 110px;
+      font-weight: 800;
+      border: none;
+      background: transparent;
+      color: #1A1A1A;
+      padding: 0;
+      line-height: 1;
+      letter-spacing: -4px;
+      text-align: center;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+      font-variant-numeric: tabular-nums;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      cursor: pointer;
+      text-align-last: center;
+    }
+
+    @media (min-width: 768px) {
+      .time-select {
+        font-size: 120px;
+      }
+    }
+
+    .time-select:focus {
+      outline: none;
+    }
+
+    @media (max-height: 700px) {
+      .time-select {
+        font-size: 100px;
+      }
+    }
+
+    @media (max-height: 600px) {
+      .time-select {
+        font-size: 70px;
+      }
+    }
+
     .time-fields input::selection {
       background: transparent;
       color: inherit;
@@ -1007,6 +1048,31 @@
       }
     }
 
+    .time-edit-select {
+      padding: 8px 6px;
+      font-size: 16px;
+      text-align: center;
+      border: 1px solid #CCCCCC;
+      border-radius: 4px;
+      background: #FFFFFF;
+      font-weight: 700;
+      color: #1A1A1A;
+      min-height: 44px;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      cursor: pointer;
+      text-align-last: center;
+    }
+
+    @media (min-width: 768px) {
+      .time-edit-select {
+        padding: 2px 4px;
+        font-size: 14px;
+        min-height: auto;
+      }
+    }
+
     .setting-item .controls-wrapper {
       display: flex;
       gap: 8px;
@@ -1410,18 +1476,26 @@
         <div class="time-input-row">
           <label>developer</label>
           <div class="time-fields">
-            <input type="number" id="revMin" min="0" max="99" value="00" inputmode="numeric" pattern="[0-9]*">
+            <select id="revMin" class="time-select">
+              <script>for(let i=0;i<60;i++)document.write('<option value="'+i+'"'+(i===0?' selected':'')+'>'+(i<10?'0'+i:i)+'</option>')</script>
+            </select>
             <span class="time-separator">:</span>
-            <input type="number" id="revSec" min="0" max="59" value="00" inputmode="numeric" pattern="[0-9]*">
+            <select id="revSec" class="time-select">
+              <script>for(let i=0;i<60;i++)document.write('<option value="'+i+'"'+(i===0?' selected':'')+'>'+(i<10?'0'+i:i)+'</option>')</script>
+            </select>
           </div>
         </div>
         
         <div class="time-input-row">
           <label>bleach</label>
           <div class="time-fields">
-            <input type="number" id="bleachMin" min="0" max="99" value="00" inputmode="numeric" pattern="[0-9]*">
+            <select id="bleachMin" class="time-select">
+              <script>for(let i=0;i<60;i++)document.write('<option value="'+i+'"'+(i===0?' selected':'')+'>'+(i<10?'0'+i:i)+'</option>')</script>
+            </select>
             <span class="time-separator">:</span>
-            <input type="number" id="bleachSec" min="0" max="59" value="00" inputmode="numeric" pattern="[0-9]*">
+            <select id="bleachSec" class="time-select">
+              <script>for(let i=0;i<60;i++)document.write('<option value="'+i+'"'+(i===0?' selected':'')+'>'+(i<10?'0'+i:i)+'</option>')</script>
+            </select>
           </div>
         </div>
       </div>
@@ -1444,18 +1518,26 @@
         <div class="time-input-row">
           <label>developer</label>
           <div class="time-fields">
-            <input type="number" id="nbRevMin" min="0" max="99" value="00" inputmode="numeric" pattern="[0-9]*">
+            <select id="nbRevMin" class="time-select">
+              <script>for(let i=0;i<60;i++)document.write('<option value="'+i+'"'+(i===0?' selected':'')+'>'+(i<10?'0'+i:i)+'</option>')</script>
+            </select>
             <span class="time-separator">:</span>
-            <input type="number" id="nbRevSec" min="0" max="59" value="00" inputmode="numeric" pattern="[0-9]*">
+            <select id="nbRevSec" class="time-select">
+              <script>for(let i=0;i<60;i++)document.write('<option value="'+i+'"'+(i===0?' selected':'')+'>'+(i<10?'0'+i:i)+'</option>')</script>
+            </select>
           </div>
         </div>
         
         <div class="time-input-row">
           <label>fixer</label>
           <div class="time-fields">
-            <input type="number" id="nbFixMin" min="0" max="99" value="00" inputmode="numeric" pattern="[0-9]*">
+            <select id="nbFixMin" class="time-select">
+              <script>for(let i=0;i<60;i++)document.write('<option value="'+i+'"'+(i===0?' selected':'')+'>'+(i<10?'0'+i:i)+'</option>')</script>
+            </select>
             <span class="time-separator">:</span>
-            <input type="number" id="nbFixSec" min="0" max="59" value="00" inputmode="numeric" pattern="[0-9]*">
+            <select id="nbFixSec" class="time-select">
+              <script>for(let i=0;i<60;i++)document.write('<option value="'+i+'"'+(i===0?' selected':'')+'>'+(i<10?'0'+i:i)+'</option>')</script>
+            </select>
           </div>
         </div>
       </div>
@@ -2138,14 +2220,16 @@
         const timeEditContainer = document.createElement('div');
         timeEditContainer.className = 'time-edit-container hidden';
         
-        const minInput = document.createElement('input');
-        minInput.type = 'number';
-        minInput.min = '0';
-        minInput.value = Math.floor(step.duration / 60);
-        minInput.inputMode = 'numeric';
-        minInput.pattern = '[0-9]*';
-        minInput.className = 'time-edit-input';
-        minInput.oninput = (e) => {
+        const minSelect = document.createElement('select');
+        minSelect.className = 'time-edit-select';
+        for (let i = 0; i < 60; i++) {
+          const option = document.createElement('option');
+          option.value = i;
+          option.textContent = i < 10 ? '0' + i : i;
+          if (i === Math.floor(step.duration / 60)) option.selected = true;
+          minSelect.appendChild(option);
+        }
+        minSelect.onchange = (e) => {
           const mins = parseInt(e.target.value) || 0;
           const secs = currentSteps[index].duration % 60;
           currentSteps[index].duration = mins * 60 + secs;
@@ -2156,15 +2240,16 @@
         separator.textContent = ':';
         separator.className = 'time-edit-separator';
         
-        const secInput = document.createElement('input');
-        secInput.type = 'number';
-        secInput.min = '0';
-        secInput.max = '59';
-        secInput.value = step.duration % 60;
-        secInput.inputMode = 'numeric';
-        secInput.pattern = '[0-9]*';
-        secInput.className = 'time-edit-input';
-        secInput.oninput = (e) => {
+        const secSelect = document.createElement('select');
+        secSelect.className = 'time-edit-select';
+        for (let i = 0; i < 60; i++) {
+          const option = document.createElement('option');
+          option.value = i;
+          option.textContent = i < 10 ? '0' + i : i;
+          if (i === step.duration % 60) option.selected = true;
+          secSelect.appendChild(option);
+        }
+        secSelect.onchange = (e) => {
           const mins = Math.floor(currentSteps[index].duration / 60);
           const secs = parseInt(e.target.value) || 0;
           currentSteps[index].duration = mins * 60 + secs;
@@ -2180,13 +2265,10 @@
         timeDisplay.onclick = () => {
           timeDisplay.classList.add('hidden');
           timeEditContainer.classList.remove('hidden');
-          minInput.focus();
-          minInput.select();
         };
         
-        // Utiliser mousedown/touchstart au lieu de blur pour éviter la fermeture trop rapide
+        // Fermer quand on clique en dehors
         const closeEdit = (e) => {
-          // Ne fermer que si on clique en dehors des inputs
           if (!timeEditContainer.contains(e.target) && e.target !== timeDisplay) {
             timeDisplay.classList.remove('hidden');
             timeEditContainer.classList.add('hidden');
@@ -2195,24 +2277,16 @@
           }
         };
         
-        // Ajouter les listeners quand on ouvre l'édition
-        minInput.onfocus = () => {
+        timeEditContainer.addEventListener('click', () => {
           setTimeout(() => {
             document.addEventListener('mousedown', closeEdit);
             document.addEventListener('touchstart', closeEdit);
           }, 100);
-        };
+        });
         
-        secInput.onfocus = () => {
-          setTimeout(() => {
-            document.addEventListener('mousedown', closeEdit);
-            document.addEventListener('touchstart', closeEdit);
-          }, 100);
-        };
-        
-        timeEditContainer.appendChild(minInput);
+        timeEditContainer.appendChild(minSelect);
         timeEditContainer.appendChild(separator);
-        timeEditContainer.appendChild(secInput);
+        timeEditContainer.appendChild(secSelect);
         
         timeGroup.appendChild(timeDisplay);
         timeGroup.appendChild(timeEditContainer);
