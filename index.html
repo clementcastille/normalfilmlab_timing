@@ -1566,54 +1566,65 @@
     let currentProcess = '';
     let wakeLock = null;
     let noSleepVideo = null;
+    let noSleepEnabled = false;
 
     // Créer une vidéo invisible pour empêcher la mise en veille sur iOS
     function createNoSleepVideo() {
+      const webm = 'data:video/webm;base64,GkXfowEAAAAAAAAfQoaBAUL3gQFC8oEEQvOBCEKChHdlYm1telekmcOcQgEAAAAAAAAVqQEAQAXWAIAAAABVqQEBADGDgQEBAgEBGlTumSKhAQAAAJJJZmVpZc1hXXKJMdBJmkRhdGEjdEIJc01mL3E0TUYJc1L0elFJWGYJc2xJJmNHmNDI1AVUqYOvR0vXbQEAAAAAAAARuhCJ0mKK3oMBwgAAAAAAAFJN4YBAAAAAAAAAAGfQoaBAAABG7mBAYqBAgCdASoQABAAAEcIhYWIhYSEZgAA9AQAAAA=';
+      
       noSleepVideo = document.createElement('video');
-      noSleepVideo.setAttribute('playsinline', '');
       noSleepVideo.setAttribute('muted', '');
-      noSleepVideo.setAttribute('loop', '');
-      noSleepVideo.style.position = 'absolute';
-      noSleepVideo.style.left = '-9999px';
-      noSleepVideo.style.width = '1px';
-      noSleepVideo.style.height = '1px';
+      noSleepVideo.setAttribute('title', 'No Sleep');
+      noSleepVideo.setAttribute('playsinline', '');
+      noSleepVideo.setAttribute('webkit-playsinline', '');
       
-      // Vidéo base64 minimale (1 pixel noir, très courte)
-      noSleepVideo.src = 'data:video/mp4;base64,AAAAIGZ0eXBpc29tAAACAGlzb21pc28yYXZjMW1wNDEAAAAIZnJlZQAAAs1tZGF0AAACrgYF//+q3EXpvebZSLeWLNgg2SPu73gyNjQgLSBjb3JlIDE0OCByMjYwMSBhMGNkN2QzIC0gSC4yNjQvTVBFRy00IEFWQyBjb2RlYyAtIENvcHlsZWZ0IDIwMDMtMjAxNSAtIGh0dHA6Ly93d3cudmlkZW9sYW4ub3JnL3gyNjQuaHRtbCAtIG9wdGlvbnM6IGNhYmFjPTEgcmVmPTMgZGVibG9jaz0xOjA6MCBhbmFseXNlPTB4MzoweDExMyBtZT1oZXggc3VibWU9NyBwc3k9MSBwc3lfcmQ9MS4wMDowLjAwIG1peGVkX3JlZj0xIG1lX3JhbmdlPTE2IGNocm9tYV9tZT0xIHRyZWxsaXM9MSA4eDhkY3Q9MSBjcW09MCBkZWFkem9uZT0yMSwxMSBmYXN0X3Bza2lwPTEgY2hyb21hX3FwX29mZnNldD0tMiB0aHJlYWRzPTEgbG9va2FoZWFkX3RocmVhZHM9MSBzbGljZWRfdGhyZWFkcz0wIG5yPTAgZGVjaW1hdGU9MSBpbnRlcmxhY2VkPTAgYmx1cmF5X2NvbXBhdD0wIGNvbnN0cmFpbmVkX2ludHJhPTAgYmZyYW1lcz0zIGJfcHlyYW1pZD0yIGJfYWRhcHQ9MSBiX2JpYXM9MCBkaXJlY3Q9MSB3ZWlnaHRiPTEgb3Blbl9nb3A9MCB3ZWlnaHRwPTIga2V5aW50PTI1MCBrZXlpbnRfbWluPTEgc2NlbmVjdXQ9NDAgaW50cmFfcmVmcmVzaD0wIHJjX2xvb2thaGVhZD00MCByYz1jcmYgbWJ0cmVlPTEgY3JmPTIzLjAgcWNvbXA9MC42MCBxcG1pbj0wIHFwbWF4PTY5IHFwc3RlcD00IGlwX3JhdGlvPTEuNDAgYXE9MToxLjAwAIAAAAAPZYiEACD/2lu4PtiAGCZiAAAAAH5tb292AAAAbG12aGQAAAAAAAAAAAAAAAAAAAPoAAAAZAABAAABAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAACGHRyYWsAAABcdGtoZAAAAAMAAAAAAAAAAAAAAAEAAAAAAAAAZAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAEAAAAAAAgAAAAIAAAAAACRlZHRzAAAAHGVsc3QAAAAAAAAAAQAAAGQAAAAAAAEAAAAAAZBtZGlhAAAAIG1kaGQAAAAAAAAAAAAAAAAAACgAAAAEAFXEAAAAAAAtaGRscgAAAAAAAAAAdmlkZQAAAAAAAAAAAAAAAFZpZGVvSGFuZGxlcgAAAAE7bWluZgAAABR2bWhkAAAAAQAAAAAAAAAAAAAAJGRpbmYAAAAcZHJlZgAAAAAAAAABAAAADHVybCAAAAABAAAA+3N0YmwAAACXc3RzZAAAAAAAAAABAAAAh2F2YzEAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAgACAEgAAABIAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAY//8AAAAxYXZjQwFkAAr/4QAYZ2QACqzZX4iIhAAAAwAEAAADAFA8SJZYAQAGaOvjyyLAAAAAGHN0dHMAAAAAAAAAAQAAAAEAAAQAAAAAHHN0c2MAAAAAAAAAAQAAAAEAAAABAAAAAQAAABRzdHN6AAAAAAAAAsUAAAABAAAAFHN0Y28AAAAAAAAAAQAAADAAAABidWR0YQAAAFptZXRhAAAAAAAAACFoZGxyAAAAAAAAAABtZGlyYXBwbAAAAAAAAAAAAAAAAC1pbHN0AAAAJal0b28AAAAdZGF0YQAAAAEAAAAATGF2ZjU2LjQwLjEwMQ==';
+      noSleepVideo.style.cssText = 'position:absolute;left:-100%;top:-100%;width:1px;height:1px;';
       
+      noSleepVideo.addEventListener('loadedmetadata', () => {
+        if (noSleepVideo.duration <= 1) {
+          noSleepVideo.setAttribute('loop', '');
+        } else {
+          noSleepVideo.addEventListener('timeupdate', () => {
+            if (noSleepVideo.currentTime > 0.5) {
+              noSleepVideo.currentTime = Math.random();
+            }
+          });
+        }
+      });
+      
+      noSleepVideo.src = webm;
       document.body.appendChild(noSleepVideo);
     }
 
-    async function requestWakeLock() {
-      // Méthode iOS : lecture vidéo en boucle pour empêcher la mise en veille
+    function enableNoSleep() {
+      if (noSleepEnabled) return;
+      
       if (noSleepVideo) {
-        noSleepVideo.play().catch(err => {});
+        noSleepVideo.play().then(() => {
+          noSleepEnabled = true;
+        }).catch(err => {});
       }
       
-      // Méthode standard Wake Lock API (Chrome, Edge, etc.)
-      // Uniquement si supporté et autorisé
+      // Aussi essayer Wake Lock API si disponible
       if ('wakeLock' in navigator) {
-        try {
-          wakeLock = await navigator.wakeLock.request('screen');
-        } catch (err) {
-          // Silencieusement ignorer si non autorisé
-        }
+        navigator.wakeLock.request('screen').then(lock => {
+          wakeLock = lock;
+        }).catch(err => {});
       }
     }
 
-    async function releaseWakeLock() {
-      if (wakeLock !== null) {
-        try {
-          await wakeLock.release();
-          wakeLock = null;
-        } catch (err) {
-          // Erreur Wake Lock
-        }
-      }
+    function disableNoSleep() {
+      if (!noSleepEnabled) return;
       
-      // Arrêter la vidéo NoSleep
       if (noSleepVideo) {
         noSleepVideo.pause();
+      }
+      noSleepEnabled = false;
+      
+      if (wakeLock) {
+        wakeLock.release().then(() => {
+          wakeLock = null;
+        }).catch(err => {});
       }
     }
 
@@ -1634,10 +1645,10 @@
       }
     });
 
-    // Réactiver le Wake Lock si l'app revient au premier plan
-    document.addEventListener('visibilitychange', async () => {
+    // Réactiver le NoSleep si l'app revient au premier plan
+    document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'visible' && isRunning) {
-        await requestWakeLock();
+        enableNoSleep();
       }
     });
 
@@ -1862,7 +1873,7 @@
     function startTimer() {
       isRunning = true;
       
-      requestWakeLock();
+      enableNoSleep();
       
       const btn = document.getElementById('playPauseBtn');
       btn.textContent = 'PAUSE';
@@ -1871,7 +1882,7 @@
       
       if (remainingSeconds <= 0) {
         isRunning = false;
-        releaseWakeLock();
+        disableNoSleep();
         playStepCompleteSound();
         
         btn.textContent = 'DONE';
@@ -1889,7 +1900,7 @@
         if (remainingSeconds <= 0) {
           clearInterval(timerInterval);
           isRunning = false;
-          releaseWakeLock();
+          disableNoSleep();
           playStepCompleteSound();
           
           const btn = document.getElementById('playPauseBtn');
@@ -1913,7 +1924,7 @@
       isRunning = false;
       clearInterval(timerInterval);
       
-      releaseWakeLock();
+      disableNoSleep();
       
       const btn = document.getElementById('playPauseBtn');
       btn.textContent = 'RESUME';
@@ -1938,7 +1949,7 @@
 
     function skipStep() {
       clearInterval(timerInterval);
-      releaseWakeLock();
+      disableNoSleep();
       completedSteps.push(currentStepIndex);
       
       if (currentStepIndex < currentSteps.length - 1) {
@@ -1957,7 +1968,7 @@
       clearInterval(timerInterval);
       isRunning = false;
       
-      releaseWakeLock();
+      disableNoSleep();
       
       document.getElementById('timerScreen').classList.add('hidden');
       document.getElementById('stepsScreen').classList.remove('hidden');
@@ -2001,7 +2012,7 @@
       clearInterval(timerInterval);
       isRunning = false;
       
-      releaseWakeLock();
+      disableNoSleep();
       
       const step = currentSteps[currentStepIndex];
       remainingSeconds = step.duration;
@@ -2019,7 +2030,7 @@
       clearInterval(timerInterval);
       isRunning = false;
       
-      releaseWakeLock();
+      disableNoSleep();
       
       document.getElementById('timerScreen').classList.add('hidden');
       document.getElementById('stepsScreen').classList.remove('hidden');
