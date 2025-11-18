@@ -1615,7 +1615,9 @@
     </div>
   </div>
 
-  <audio id="stepCompleteSound" preload="auto"></audio>
+  <audio id="stepCompleteSound" preload="auto">
+    <source src="notification.mp3" type="audio/mpeg">
+  </audio>
 
   <div id="settingsScreen" class="settings-screen hidden">
     <div class="steps-header">
@@ -1725,6 +1727,21 @@
     // Initialiser la vidéo NoSleep au chargement
     window.addEventListener('DOMContentLoaded', () => {
       createNoSleepVideo();
+      
+      // Débloquer l'audio sur iOS au premier touch
+      const unlockAudio = () => {
+        const sound = document.getElementById('stepCompleteSound');
+        if (sound) {
+          sound.play().then(() => {
+            sound.pause();
+            sound.currentTime = 0;
+          }).catch(() => {});
+        }
+        document.removeEventListener('touchstart', unlockAudio);
+        document.removeEventListener('click', unlockAudio);
+      };
+      document.addEventListener('touchstart', unlockAudio);
+      document.addEventListener('click', unlockAudio);
       
       // Ne plus effacer le localStorage au chargement
       // Les données sont maintenant persistantes
