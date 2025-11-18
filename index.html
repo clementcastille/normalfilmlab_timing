@@ -2061,6 +2061,14 @@
     function skipStep() {
       clearInterval(timerInterval);
       disableNoSleep();
+      
+      // Arrêter l'alarme si elle joue
+      const sound = document.getElementById('stepCompleteSound');
+      if (sound) {
+        sound.pause();
+        sound.currentTime = 0;
+      }
+      
       completedSteps.push(currentStepIndex);
       
       if (currentStepIndex < currentSteps.length - 1) {
