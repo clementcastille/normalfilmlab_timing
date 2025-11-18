@@ -277,6 +277,14 @@
       outline: none;
     }
 
+    .time-fields input::selection {
+      background: transparent;
+    }
+
+    .time-fields input::-moz-selection {
+      background: transparent;
+    }
+
     .time-separator {
       font-size: 70px;
       font-weight: 800;
@@ -668,14 +676,6 @@
       }
     }
 
-    .countdown-digit.warning {
-      color: #d61e33;
-    }
-    
-    .countdown-separator.warning {
-      color: #d61e33;
-    }
-
     .progress-dots {
       display: flex;
       flex-wrap: wrap;
@@ -962,6 +962,14 @@
       -ms-user-select: text;
       user-select: text;
       min-height: 44px;
+    }
+
+    .time-edit-input::selection {
+      background: transparent;
+    }
+
+    .time-edit-input::-moz-selection {
+      background: transparent;
     }
 
     @media (min-width: 768px) {
@@ -1557,15 +1565,39 @@
     let completedSteps = [];
     let currentProcess = '';
     let wakeLock = null;
+    let noSleepVideo = null;
+
+    // Créer une vidéo invisible pour empêcher la mise en veille sur iOS
+    function createNoSleepVideo() {
+      noSleepVideo = document.createElement('video');
+      noSleepVideo.setAttribute('playsinline', '');
+      noSleepVideo.setAttribute('muted', '');
+      noSleepVideo.setAttribute('loop', '');
+      noSleepVideo.style.position = 'absolute';
+      noSleepVideo.style.left = '-9999px';
+      noSleepVideo.style.width = '1px';
+      noSleepVideo.style.height = '1px';
+      
+      // Vidéo base64 minimale (1 pixel noir, très courte)
+      noSleepVideo.src = 'data:video/mp4;base64,AAAAIGZ0eXBpc29tAAACAGlzb21pc28yYXZjMW1wNDEAAAAIZnJlZQAAAs1tZGF0AAACrgYF//+q3EXpvebZSLeWLNgg2SPu73gyNjQgLSBjb3JlIDE0OCByMjYwMSBhMGNkN2QzIC0gSC4yNjQvTVBFRy00IEFWQyBjb2RlYyAtIENvcHlsZWZ0IDIwMDMtMjAxNSAtIGh0dHA6Ly93d3cudmlkZW9sYW4ub3JnL3gyNjQuaHRtbCAtIG9wdGlvbnM6IGNhYmFjPTEgcmVmPTMgZGVibG9jaz0xOjA6MCBhbmFseXNlPTB4MzoweDExMyBtZT1oZXggc3VibWU9NyBwc3k9MSBwc3lfcmQ9MS4wMDowLjAwIG1peGVkX3JlZj0xIG1lX3JhbmdlPTE2IGNocm9tYV9tZT0xIHRyZWxsaXM9MSA4eDhkY3Q9MSBjcW09MCBkZWFkem9uZT0yMSwxMSBmYXN0X3Bza2lwPTEgY2hyb21hX3FwX29mZnNldD0tMiB0aHJlYWRzPTEgbG9va2FoZWFkX3RocmVhZHM9MSBzbGljZWRfdGhyZWFkcz0wIG5yPTAgZGVjaW1hdGU9MSBpbnRlcmxhY2VkPTAgYmx1cmF5X2NvbXBhdD0wIGNvbnN0cmFpbmVkX2ludHJhPTAgYmZyYW1lcz0zIGJfcHlyYW1pZD0yIGJfYWRhcHQ9MSBiX2JpYXM9MCBkaXJlY3Q9MSB3ZWlnaHRiPTEgb3Blbl9nb3A9MCB3ZWlnaHRwPTIga2V5aW50PTI1MCBrZXlpbnRfbWluPTEgc2NlbmVjdXQ9NDAgaW50cmFfcmVmcmVzaD0wIHJjX2xvb2thaGVhZD00MCByYz1jcmYgbWJ0cmVlPTEgY3JmPTIzLjAgcWNvbXA9MC42MCBxcG1pbj0wIHFwbWF4PTY5IHFwc3RlcD00IGlwX3JhdGlvPTEuNDAgYXE9MToxLjAwAIAAAAAPZYiEACD/2lu4PtiAGCZiAAAAAH5tb292AAAAbG12aGQAAAAAAAAAAAAAAAAAAAPoAAAAZAABAAABAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAACGHRyYWsAAABcdGtoZAAAAAMAAAAAAAAAAAAAAAEAAAAAAAAAZAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAEAAAAAAAgAAAAIAAAAAACRlZHRzAAAAHGVsc3QAAAAAAAAAAQAAAGQAAAAAAAEAAAAAAZBtZGlhAAAAIG1kaGQAAAAAAAAAAAAAAAAAACgAAAAEAFXEAAAAAAAtaGRscgAAAAAAAAAAdmlkZQAAAAAAAAAAAAAAAFZpZGVvSGFuZGxlcgAAAAE7bWluZgAAABR2bWhkAAAAAQAAAAAAAAAAAAAAJGRpbmYAAAAcZHJlZgAAAAAAAAABAAAADHVybCAAAAABAAAA+3N0YmwAAACXc3RzZAAAAAAAAAABAAAAh2F2YzEAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAgACAEgAAABIAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAY//8AAAAxYXZjQwFkAAr/4QAYZ2QACqzZX4iIhAAAAwAEAAADAFA8SJZYAQAGaOvjyyLAAAAAGHN0dHMAAAAAAAAAAQAAAAEAAAQAAAAAHHN0c2MAAAAAAAAAAQAAAAEAAAABAAAAAQAAABRzdHN6AAAAAAAAAsUAAAABAAAAFHN0Y28AAAAAAAAAAQAAADAAAABidWR0YQAAAFptZXRhAAAAAAAAACFoZGxyAAAAAAAAAABtZGlyYXBwbAAAAAAAAAAAAAAAAC1pbHN0AAAAJal0b28AAAAdZGF0YQAAAAEAAAAATGF2ZjU2LjQwLjEwMQ==';
+      
+      document.body.appendChild(noSleepVideo);
+    }
 
     async function requestWakeLock() {
-      try {
-        if ('wakeLock' in navigator) {
+      // Méthode iOS : lecture vidéo en boucle pour empêcher la mise en veille
+      if (noSleepVideo) {
+        noSleepVideo.play().catch(err => {});
+      }
+      
+      // Méthode standard Wake Lock API (Chrome, Edge, etc.)
+      // Uniquement si supporté et autorisé
+      if ('wakeLock' in navigator) {
+        try {
           wakeLock = await navigator.wakeLock.request('screen');
-          console.log('Wake Lock activé');
+        } catch (err) {
+          // Silencieusement ignorer si non autorisé
         }
-      } catch (err) {
-        console.log('Wake Lock non disponible:', err);
       }
     }
 
@@ -1574,12 +1606,40 @@
         try {
           await wakeLock.release();
           wakeLock = null;
-          console.log('Wake Lock désactivé');
         } catch (err) {
-          console.log('Erreur Wake Lock:', err);
+          // Erreur Wake Lock
         }
       }
+      
+      // Arrêter la vidéo NoSleep
+      if (noSleepVideo) {
+        noSleepVideo.pause();
+      }
     }
+
+    // Initialiser la vidéo NoSleep au chargement
+    window.addEventListener('DOMContentLoaded', () => {
+      createNoSleepVideo();
+      
+      // Ne plus effacer le localStorage au chargement
+      // Les données sont maintenant persistantes
+      
+      const saved = localStorage.getItem('c41_steps');
+      if (saved) {
+        try {
+          currentSteps = JSON.parse(saved);
+        } catch (e) {
+          // Erreur de chargement
+        }
+      }
+    });
+
+    // Réactiver le Wake Lock si l'app revient au premier plan
+    document.addEventListener('visibilitychange', async () => {
+      if (document.visibilityState === 'visible' && isRunning) {
+        await requestWakeLock();
+      }
+    });
 
     function backToWelcome() {
       document.getElementById('configC41Screen').classList.add('hidden');
@@ -1845,9 +1905,7 @@
       const sound = document.getElementById('stepCompleteSound');
       if (sound) {
         sound.currentTime = 0;
-        sound.play().catch(err => {
-          console.log('Lecture audio bloquée:', err);
-        });
+        sound.play().catch(err => {});
       }
     }
 
@@ -1978,16 +2036,6 @@
       
       minutesEl.textContent = minutes;
       secondsEl.textContent = seconds.toString().padStart(2, '0');
-      
-      if (remainingSeconds <= 10 && remainingSeconds > 0) {
-        minutesEl.classList.add('warning');
-        secondsEl.classList.add('warning');
-        if (separatorEl) separatorEl.classList.add('warning');
-      } else {
-        minutesEl.classList.remove('warning');
-        secondsEl.classList.remove('warning');
-        if (separatorEl) separatorEl.classList.remove('warning');
-      }
     }
 
     function updateProgressDots() {
@@ -2210,20 +2258,6 @@
       localStorage.setItem(storageKey, JSON.stringify(currentSteps));
       closeSettings();
     }
-
-    window.addEventListener('DOMContentLoaded', () => {
-      // Ne plus effacer le localStorage au chargement
-      // Les données sont maintenant persistantes
-      
-      const saved = localStorage.getItem('c41_steps');
-      if (saved) {
-        try {
-          currentSteps = JSON.parse(saved);
-        } catch (e) {
-          console.error('Erreur de chargement:', e);
-        }
-      }
-    });
 
     document.addEventListener('focus', (e) => {
       if (e.target.type === 'number') {
