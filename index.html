@@ -279,10 +279,22 @@
 
     .time-fields input::selection {
       background: transparent;
+      color: inherit;
     }
 
     .time-fields input::-moz-selection {
       background: transparent;
+      color: inherit;
+    }
+
+    .time-edit-input::selection {
+      background: transparent;
+      color: inherit;
+    }
+
+    .time-edit-input::-moz-selection {
+      background: transparent;
+      color: inherit;
     }
 
     .time-separator {
@@ -2272,7 +2284,17 @@
 
     document.addEventListener('focus', (e) => {
       if (e.target.type === 'number') {
-        e.target.select();
+        // Désélectionner immédiatement pour éviter la sélection bleue
+        setTimeout(() => {
+          e.target.setSelectionRange(e.target.value.length, e.target.value.length);
+        }, 0);
+      }
+    }, true);
+
+    // Désélectionner quand une sélection se produit
+    document.addEventListener('select', (e) => {
+      if (e.target.type === 'number') {
+        e.target.selectionStart = e.target.selectionEnd;
       }
     }, true);
   </script>
