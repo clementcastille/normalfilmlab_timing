@@ -1732,9 +1732,12 @@
       const unlockAudio = () => {
         const sound = document.getElementById('stepCompleteSound');
         if (sound) {
+          // Charger le son sans le jouer audiblement
+          sound.volume = 0;
           sound.play().then(() => {
             sound.pause();
             sound.currentTime = 0;
+            sound.volume = 1;
           }).catch(() => {});
         }
         document.removeEventListener('touchstart', unlockAudio);
